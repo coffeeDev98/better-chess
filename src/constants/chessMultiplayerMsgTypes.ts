@@ -1,0 +1,1 @@
+export const BOARD_MOVE_UPDATE = "BOARD_MOVE_UPDATE";

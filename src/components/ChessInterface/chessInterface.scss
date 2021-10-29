@@ -1,0 +1,28 @@
+.chess-interface {
+  display: grid;
+  width: 100%;
+  max-width: 1440px;
+  height: 100%;
+  //   height: 100vh;
+  //   justify-content: center;
+  //   align-items: center;
+  background: black;
+  grid-template-columns: 66% 37%;
+  grid-template-rows: 66%;
+  grid-template-areas: "board sidePanel";
+  .board-container {
+    grid-area: board;
+    border: 10px solid rgba(255, 255, 255);
+  }
+  .side-panel {
+    grid-area: sidePanel;
+    width: 100%;
+    height: 100%;
+    // width: 348px;
+    // height: 640px;
+    background: #2b2b34;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    // box-sizing: border-box;
+    border-radius: 0 24px 24px 0;
+  }
+}
