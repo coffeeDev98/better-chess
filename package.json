@@ -1,9 +1,9 @@
 {
+  "homepage": "https://coffeedev98.github.io/better-chess/",
   "name": "better-chess",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@react-chess/chessground": "^1.1.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -17,6 +17,7 @@
     "autoprefixer": "^9",
     "axios": "^0.24.0",
     "chess.js": "^0.12.0",
+    "chessboard-arrows": "^1.0.2",
     "chessboardjsx": "^2.4.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -29,7 +30,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^3.2.3",
     "sass": "^1.43.4",
     "sass-loader": "^12.2.0"
   }

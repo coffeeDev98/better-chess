@@ -16,6 +16,7 @@ import bR from "../../assets/images/chessPieces/bR.svg";
 import bN from "../../assets/images/chessPieces/bN.svg";
 import bP from "../../assets/images/chessPieces/bP.svg";
 
+const ChessboardArrows = require("chessboard-arrows");
 interface ICustomPieceProps {
   squareWidth: number;
   isDragging: boolean;
@@ -34,6 +35,7 @@ const Chessboard = (props: IProps) => {
   const {
     setBoardPosition,
     fen,
+    pgn,
     onDrop,
     onMouseOverSquare,
     onMouseOutSquare,
@@ -43,29 +45,6 @@ const Chessboard = (props: IProps) => {
     onSquareRightClick,
   } = useChess(Agora, Multiplayer);
 
-  // const config: Partial<Config> = {
-  //   fen: fen,
-  //   coordinates: true,
-  //   addPieceZIndex: true,
-  //   // viewOnly: viewMode,
-  //   disableContextMenu: false,
-  //   resizable: true,
-  //   autoCastle: true,
-  //   highlight: {
-  //     lastMove: true,
-  //     check: true,
-  //   },
-  //   selectable: {
-  //     enabled: true,
-  //   },
-  //   movable: calcMovable(),
-  //   draggable: calcDraggable(),
-  //   events: {
-  //     dropNewPiece: (piece: Piece, key: Key) => {
-  //       console.log({ piece, key });
-  //     },
-  //   },
-  // };
   const customPieces = {
     wK: ({ squareWidth, isDragging }: ICustomPieceProps) => (
       <img
@@ -191,13 +170,10 @@ const Chessboard = (props: IProps) => {
   };
   return (
     <>
-      {/* <Chessground
-        width={dimension || 900}
-        height={dimension || 900}
-        config={config}
-      /> */}
       <NativeChessboard
+        id="board-0"
         position={fen}
+        draggable={true}
         getPosition={setBoardPosition}
         lightSquareStyle={{ backgroundColor: "#E8EDF9" }}
         darkSquareStyle={{ backgroundColor: "#B7C0D8" }}
@@ -216,6 +192,15 @@ const Chessboard = (props: IProps) => {
         onSquareClick={onSquareClick}
         onSquareRightClick={onSquareRightClick}
         // sparePieces={true}
+        // roughSquare={({
+        //   squareElement,
+        //   squareWidth,
+        // }: {
+        //   squareElement: SVGElement;
+        //   squareWidth: number;
+        // }) => {
+        //   console.log("ROUGH: ", { squareElement, squareWidth });
+        // }}
       />
     </>
   );

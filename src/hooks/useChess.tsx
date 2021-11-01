@@ -17,7 +17,10 @@ import {
   Elements,
 } from "chessground/types";
 import { parseJSON } from "../utils/utils";
-import { BOARD_MOVE_UPDATE } from "../constants/chessMultiplayerMsgTypes";
+import {
+  BOARD_MOVE_UNDO,
+  BOARD_MOVE_UPDATE,
+} from "../constants/chessMultiplayerMsgTypes";
 
 const Chess = require("chess.js");
 
@@ -80,6 +83,8 @@ const useChess = (Agora: any, Multiplayer: any) => {
     square: string;
     history: Move[];
     boardPosition: any;
+    pgn: any;
+    undoMovesArray: Move[];
   }>({
     fen: "start",
     // square styles for active drop square
@@ -93,23 +98,38 @@ const useChess = (Agora: any, Multiplayer: any) => {
     // array of past game moves
     history: [],
     boardPosition: {},
+    pgn: [],
+    undoMovesArray: [],
   });
 
+  // useEffect(() => {
+  //   console.log("PGN: ", state.pgn);
+  // }, [state.pgn]);
+
   useEffect(() => {
-    console.log("BOARD POSITION: ", state.boardPosition);
-  }, [state.boardPosition]);
+    console.log("UNDO MOVES: ", state.undoMovesArray);
+  }, [state.undoMovesArray]);
 
   useEffect(() => {
     if (Agora.channel) {
       Agora.channel?.on("ChannelMessage", (message: any) => {
         const data = parseJSON(message.text);
-        console.log("MESSAGE DATA: ", data);
+        // console.log("MESSAGE DATA: ", data);
         switch (data.type) {
           case BOARD_MOVE_UPDATE:
             onDrop({
               sourceSquare: data.json.move.from,
               targetSquare: data.json.move.to,
             });
+            break;
+          case BOARD_MOVE_UNDO:
+            const parametersObj = {
+              chess,
+              state,
+              setState,
+              undoArray: data.json.undoArray,
+            };
+            Multiplayer.undoMove(parametersObj);
             break;
           default:
             console.log("INVALID OPERATION");
@@ -120,6 +140,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
   }, [Agora.channel]);
 
   const setBoardPosition = (position: any) => {
+    console.log("BOARD POSITION: ", position);
     setState({
       ...state,
       boardPosition: position,
@@ -195,16 +216,18 @@ const useChess = (Agora: any, Multiplayer: any) => {
     for (var i = 0; i < moves.length; i++) {
       squaresToHighlight.push(moves[i].to);
     }
-    console.log("SQUARESTOHIGHLIGHT: ", squaresToHighlight);
+    // console.log("SQUARESTOHIGHLIGHT: ", squaresToHighlight);
     highlightSquare(square, squaresToHighlight);
   };
 
   const onDrop = ({
     sourceSquare,
     targetSquare,
+    piece,
   }: {
     sourceSquare: Square;
     targetSquare: Square;
+    piece?: string;
   }) => {
     // see if the move is legal
     let move = chess.move({
@@ -212,6 +235,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
       to: targetSquare,
       // promotion: "q", // always promote to a queen for example simplicity
     });
+    // console.log("MOVE: ", move);
     const moves = chess.moves({ verbose: true });
     for (let i = 0, len = moves.length; i < len; i++) {
       /* eslint-disable-line */
@@ -220,7 +244,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
         moves[i].from === sourceSquare
       ) {
         // setPendingMove([sourceSquare, targetSquare]);
-        console.log("opening promotional modal");
+        // console.log("opening promotional modal");
         promotion(sourceSquare, targetSquare, "r");
         // showPromotionModal();
         return;
@@ -232,6 +256,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
     setState(({ history, pieceSquare }) => ({
       ...state,
       fen: chess.fen(),
+      pgn: chess.pgn()?.split(/\d\./),
       history: chess.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history }),
     }));
@@ -259,7 +284,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
         moves[i].from === state.pieceSquare
       ) {
         // setPendingMove([state.pieceSquare, targetSquare]);
-        console.log("opening promotional modal");
+        // console.log("opening promotional modal");
         promotion(state.pieceSquare, square, "r");
         // showPromotionModal();
         return;
@@ -272,6 +297,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
     setState({
       ...state,
       fen: chess.fen(),
+      pgn: chess.pgn()?.split(/\d\./),
       history: chess.history({ verbose: true }),
       pieceSquare: "",
     });
@@ -295,9 +321,43 @@ const useChess = (Agora: any, Multiplayer: any) => {
       squareStyles: { [square]: { backgroundColor: "deepPink" } },
     });
 
+  const undoMove = () => {
+    const undoMoveObj = chess.undo();
+    if (undoMoveObj) {
+      setState({
+        ...state,
+        fen: chess.fen(),
+        undoMovesArray: [...state.undoMovesArray, undoMoveObj],
+      });
+      Multiplayer.undoMoveMsg([...state.undoMovesArray, undoMoveObj]);
+    }
+  };
+  const redoMove = () => {
+    if (state.undoMovesArray.length === 0) return;
+    const redoMoveObj: Move | undefined = state.undoMovesArray.pop();
+    console.log("REDO: ", redoMoveObj);
+    if (redoMoveObj) {
+      const move = chess.move(redoMoveObj);
+      console.log("REDONE: ", move);
+      if (move !== null) {
+        setState(({ history, pieceSquare }) => ({
+          ...state,
+          fen: chess.fen(),
+          pgn: chess.pgn()?.split(/\d\./),
+          history: chess.history({ verbose: true }),
+          squareStyles: squareStyling({ pieceSquare, history }),
+          // undoMovesArray: ,
+        }));
+
+        Multiplayer.updateBoard(move);
+      }
+    }
+  };
+
   return {
     setBoardPosition,
     fen: state.fen,
+    pgn: state.pgn,
     onDrop,
     onMouseOverSquare,
     onMouseOutSquare,
@@ -305,6 +365,8 @@ const useChess = (Agora: any, Multiplayer: any) => {
     onDragOverSquare,
     onSquareClick,
     onSquareRightClick,
+    undoMove,
+    redoMove,
   };
 };
 

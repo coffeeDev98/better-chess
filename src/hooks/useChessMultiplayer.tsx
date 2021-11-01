@@ -1,6 +1,9 @@
-import { ShortMove } from "chess.js";
+import { ChessInstance, Move, ShortMove } from "chess.js";
 import React, { useEffect } from "react";
-import { BOARD_MOVE_UPDATE } from "../constants/chessMultiplayerMsgTypes";
+import {
+  BOARD_MOVE_UNDO,
+  BOARD_MOVE_UPDATE,
+} from "../constants/chessMultiplayerMsgTypes";
 import { IMultiplayerProps } from "../types/chessMultiplayer";
 import { parseJSON } from "../utils/utils";
 
@@ -17,7 +20,34 @@ const useChessMultiplayer = (props: IProps) => {
     };
     Agora?.sendChannelMessage(updateObject, BOARD_MOVE_UPDATE);
   };
-  return { updateBoard };
+  const undoMoveMsg = (undoArray: Move[]) => {
+    const updateObject = {
+      undoArray: undoArray,
+    };
+    Agora?.sendChannelMessage(updateObject, BOARD_MOVE_UNDO);
+  };
+  const undoMove = ({
+    chess,
+    state,
+    setState,
+    undoArray,
+  }: {
+    chess: ChessInstance;
+    state: any;
+    setState: any;
+    undoArray: Move[];
+  }) => {
+    const undoMoveObj = chess.undo();
+    if (undoMoveObj) {
+      setState({
+        ...state,
+        fen: chess.fen(),
+        undoMovesArray: undoArray,
+      });
+    }
+  };
+
+  return { updateBoard, undoMoveMsg, undoMove };
 };
 
 export default useChessMultiplayer;

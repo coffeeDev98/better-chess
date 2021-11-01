@@ -1,1 +1,2 @@
 export const BOARD_MOVE_UPDATE = "BOARD_MOVE_UPDATE";
+export const BOARD_MOVE_UNDO = "BOARD_MOVE_UNDO";
