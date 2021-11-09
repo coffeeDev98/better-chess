@@ -88,7 +88,12 @@ const ChessInterface = (props: Props) => {
   // });
   const [dimension, setDimension] = useState<number>();
   // const [undoMove, setUndoMove] = useState<boolean>(false);
-  const [editorMode, setEditorMode] = useState<boolean>(false);
+  const [editorMode, setEditorMode] = useState<boolean>(
+    (Object.fromEntries(new URLSearchParams(window.location.search).entries())
+      .editorMode === "true"
+      ? true
+      : false) || false
+  );
   const [sidePanelSection, setSidePanelSection] = useState<string | undefined>(
     "menu"
   );
