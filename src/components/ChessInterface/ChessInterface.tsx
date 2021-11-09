@@ -3,10 +3,21 @@ import NativeChessboard from "chessboardjsx";
 import useChess from "../../hooks/useChess";
 import useAgora from "../../hooks/useAgora";
 import useChessMultiplayer from "../../hooks/useChessMultiplayer";
+import useBoardEditor from "../../hooks/useBoardEditor";
+import { IChessboardProps } from "../../types/chessboardTypes";
 import {
   ScChessPgn,
   ScChessInterface,
+  ScChessSidePanel,
+  GamePlayPanel1,
+  GamePlayPanel2,
 } from "../_StyledComponent/StyledComponent";
+import undoIcon from "../../assets/images/sidePanelIcons/undoMove.svg";
+import redoIcon from "../../assets/images/sidePanelIcons/redoMove.svg";
+import historyIcon from "../../assets/images/sidePanelIcons/history.svg";
+import resetIcon from "../../assets/images/sidePanelIcons/resetBoard.svg";
+import flipIcon from "../../assets/images/sidePanelIcons/flipBoard.svg";
+import loadIcon from "../../assets/images/sidePanelIcons/loadGame.svg";
 import wK from "../../assets/images/chessPieces/wK.svg";
 import wQ from "../../assets/images/chessPieces/wQ.svg";
 import wB from "../../assets/images/chessPieces/wB.svg";
@@ -19,8 +30,6 @@ import bB from "../../assets/images/chessPieces/bB.svg";
 import bR from "../../assets/images/chessPieces/bR.svg";
 import bN from "../../assets/images/chessPieces/bN.svg";
 import bP from "../../assets/images/chessPieces/bP.svg";
-import useBoardEditor from "../../hooks/useBoardEditor";
-import { IChessboardProps } from "../../types/chessboardTypes";
 // import Chessboard from "../Chessboard/Chessboard";
 
 interface Props {}
@@ -29,6 +38,47 @@ interface ICustomPieceProps {
   squareWidth: number;
   isDragging: boolean;
 }
+
+const SidePanelMenu = ({
+  undoMove,
+  redoMove,
+}: {
+  undoMove: any;
+  redoMove: any;
+}) => (
+  <>
+    <GamePlayPanel1>
+      <div onClick={undoMove}>
+        <img src={undoIcon} alt="Undo" />
+      </div>
+      <div onClick={redoMove}>
+        <img src={redoIcon} alt="Redo" />
+      </div>
+      <div>
+        <img src={historyIcon} alt="History" />
+      </div>
+      <div>
+        <img src={resetIcon} alt="Reset" />
+      </div>
+      <div>
+        <img src={flipIcon} alt="Flip" />
+      </div>
+      {/* <div>
+        <ScChessPgn>
+          {pgn.map?.(
+            (move: string, index: number) =>
+              index !== 0 && <ScChessPgn>{`${index}. ${move}`}</ScChessPgn>
+          )}
+        </ScChessPgn>
+      </div> */}
+    </GamePlayPanel1>
+    <GamePlayPanel2>
+      <div>
+        <img src={loadIcon} alt="Load" />
+      </div>
+    </GamePlayPanel2>
+  </>
+);
 
 const ChessInterface = (props: Props) => {
   // const Agora = useAgora();
@@ -39,10 +89,16 @@ const ChessInterface = (props: Props) => {
   const [dimension, setDimension] = useState<number>();
   // const [undoMove, setUndoMove] = useState<boolean>(false);
   const [editorMode, setEditorMode] = useState<boolean>(false);
+  const [sidePanelSection, setSidePanelSection] = useState<string | undefined>(
+    "menu"
+  );
+  // const [chessboardConfig, setChessboardConfig] = useState<IChessboardProps>();
+
   const Agora = useAgora();
   const Multiplayer = useChessMultiplayer({
-    Agora: Agora,
+    Agora,
   });
+  const boardEditor = useBoardEditor();
   const {
     setBoardPosition,
     fen,
@@ -58,14 +114,29 @@ const ChessInterface = (props: Props) => {
     redoMove,
   } = useChess(Agora, Multiplayer);
 
-  // const { fen, onDrop } = useBoardEditor();
-
   useEffect(() => {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
 
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
+
+  useEffect(() => {
+    const boardContainerDiv = window.document
+      .getElementById("board-container")
+      ?.querySelector<HTMLElement>("div");
+    //   ?.querySelector("div")
+
+    const firstChild = boardContainerDiv?.firstElementChild;
+    const lastChild = boardContainerDiv?.lastElementChild;
+
+    if (firstChild && lastChild) {
+      firstChild.classList.add("black-spare-pieces");
+      lastChild.classList.add("white-spare-pieces");
+      firstChild.setAttribute("style", "");
+      lastChild.setAttribute("style", "");
+    }
+  }, [window.document.getElementById("board-container")]);
 
   // const toggleUndoMove = () => setUndoMove(!undoMove);
 
@@ -201,9 +272,9 @@ const ChessInterface = (props: Props) => {
 
   let chessboardConfig: Partial<IChessboardProps> = {
     id: "board-0",
-    position: fen,
+    position: editorMode ? boardEditor.fen : fen,
+    // position: fen,
     draggable: true,
-    getPosition: setBoardPosition,
     lightSquareStyle: { backgroundColor: "#E8EDF9" },
     darkSquareStyle: { backgroundColor: "#B7C0D8" },
     pieces: customPieces,
@@ -213,35 +284,36 @@ const ChessInterface = (props: Props) => {
       position: "relative",
     },
     width: dimension,
-    onDrop: onDrop,
-    onMouseOverSquare: onMouseOverSquare,
-    onMouseOutSquare: onMouseOutSquare,
-    squareStyles: squareStyles,
-    onDragOverSquare: onDragOverSquare,
-    onSquareClick: onSquareClick,
-    onSquareRightClick: onSquareRightClick,
-    // sparePieces={true}
+    ...(editorMode ? { onDrop: boardEditor.onDrop } : { onDrop }),
+    // onDrop,
+    ...(!editorMode && {
+      getPosition: setBoardPosition,
+      onMouseOverSquare,
+      onMouseOutSquare,
+      squareStyles,
+      onDragOverSquare,
+      onSquareClick,
+      onSquareRightClick,
+    }),
+    sparePieces: editorMode,
   };
-
   return (
-    <>
-      <ScChessInterface>
-        <div id="board-container" className="board-container">
-          <NativeChessboard {...chessboardConfig} />
-        </div>
-        <div className="side-panel">
-          <h1 onClick={undoMove}>Undo</h1>
-          <h1 onClick={redoMove}>Redo</h1>
-          <div></div>
-          {/* <ScChessPgn> */}
-          {/* {pgn.map?.(
-            (move: string, index: number) =>
-              index !== 0 && <ScChessPgn>{`${index}. ${move}`}</ScChessPgn>
-          )} */}
-          {/* </ScChessPgn> */}
-        </div>
-      </ScChessInterface>
-    </>
+    <ScChessInterface dimension={dimension} editorMode={editorMode}>
+      <div id="board-container" className="board-container">
+        <NativeChessboard {...chessboardConfig} />
+      </div>
+      {/* {!editorMode && ( */}
+      <ScChessSidePanel editorMode={editorMode}>
+        {!editorMode && (
+          <>
+            {sidePanelSection === "menu" && (
+              <SidePanelMenu undoMove={undoMove} redoMove={redoMove} />
+            )}
+          </>
+        )}
+      </ScChessSidePanel>
+      {/* )} */}
+    </ScChessInterface>
   );
 };
 
