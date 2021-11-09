@@ -1,23 +1,29 @@
 {
   "files": {
-    "main.css": "/better-chess/static/css/main.64b7a52b.chunk.css",
-    "main.js": "/better-chess/static/js/main.ab29ae6f.chunk.js",
-    "main.js.map": "/better-chess/static/js/main.ab29ae6f.chunk.js.map",
+    "main.css": "/better-chess/static/css/main.247fcd8b.chunk.css",
+    "main.js": "/better-chess/static/js/main.6cf03539.chunk.js",
+    "main.js.map": "/better-chess/static/js/main.6cf03539.chunk.js.map",
     "runtime-main.js": "/better-chess/static/js/runtime-main.74a5c4ee.js",
     "runtime-main.js.map": "/better-chess/static/js/runtime-main.74a5c4ee.js.map",
-    "static/js/2.a23ad55f.chunk.js": "/better-chess/static/js/2.a23ad55f.chunk.js",
-    "static/js/2.a23ad55f.chunk.js.map": "/better-chess/static/js/2.a23ad55f.chunk.js.map",
+    "static/js/2.8dfae732.chunk.js": "/better-chess/static/js/2.8dfae732.chunk.js",
+    "static/js/2.8dfae732.chunk.js.map": "/better-chess/static/js/2.8dfae732.chunk.js.map",
     "static/js/3.8a261b48.chunk.js": "/better-chess/static/js/3.8a261b48.chunk.js",
     "static/js/3.8a261b48.chunk.js.map": "/better-chess/static/js/3.8a261b48.chunk.js.map",
     "index.html": "/better-chess/index.html",
-    "static/css/main.64b7a52b.chunk.css.map": "/better-chess/static/css/main.64b7a52b.chunk.css.map",
-    "static/js/2.a23ad55f.chunk.js.LICENSE.txt": "/better-chess/static/js/2.a23ad55f.chunk.js.LICENSE.txt",
+    "static/css/main.247fcd8b.chunk.css.map": "/better-chess/static/css/main.247fcd8b.chunk.css.map",
+    "static/js/2.8dfae732.chunk.js.LICENSE.txt": "/better-chess/static/js/2.8dfae732.chunk.js.LICENSE.txt",
     "static/media/bB.1f023e3e.svg": "/better-chess/static/media/bB.1f023e3e.svg",
     "static/media/bK.e57316c7.svg": "/better-chess/static/media/bK.e57316c7.svg",
     "static/media/bN.a46c4723.svg": "/better-chess/static/media/bN.a46c4723.svg",
     "static/media/bP.d9262a65.svg": "/better-chess/static/media/bP.d9262a65.svg",
     "static/media/bQ.c21470b8.svg": "/better-chess/static/media/bQ.c21470b8.svg",
     "static/media/bR.2724e583.svg": "/better-chess/static/media/bR.2724e583.svg",
+    "static/media/flipBoard.c1ef8478.svg": "/better-chess/static/media/flipBoard.c1ef8478.svg",
+    "static/media/history.8223d0ff.svg": "/better-chess/static/media/history.8223d0ff.svg",
+    "static/media/loadGame.28f8774a.svg": "/better-chess/static/media/loadGame.28f8774a.svg",
+    "static/media/redoMove.c6f42448.svg": "/better-chess/static/media/redoMove.c6f42448.svg",
+    "static/media/resetBoard.7af0fcde.svg": "/better-chess/static/media/resetBoard.7af0fcde.svg",
+    "static/media/undoMove.586eb02f.svg": "/better-chess/static/media/undoMove.586eb02f.svg",
     "static/media/wB.56f72474.svg": "/better-chess/static/media/wB.56f72474.svg",
     "static/media/wK.3b342df8.svg": "/better-chess/static/media/wK.3b342df8.svg",
     "static/media/wN.d5fa39eb.svg": "/better-chess/static/media/wN.d5fa39eb.svg",
@@ -27,8 +33,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.74a5c4ee.js",
-    "static/js/2.a23ad55f.chunk.js",
-    "static/css/main.64b7a52b.chunk.css",
-    "static/js/main.ab29ae6f.chunk.js"
+    "static/js/2.8dfae732.chunk.js",
+    "static/css/main.247fcd8b.chunk.css",
+    "static/js/main.6cf03539.chunk.js"
   ]
 }
