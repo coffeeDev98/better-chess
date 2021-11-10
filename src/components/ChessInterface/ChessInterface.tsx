@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import NativeChessboard from "chessboardjsx";
 import useChess from "../../hooks/useChess";
 import useAgora from "../../hooks/useAgora";
@@ -11,6 +11,7 @@ import {
   ScChessSidePanel,
   GamePlayPanel1,
   GamePlayPanel2,
+  EditorSidePanel,
 } from "../_StyledComponent/StyledComponent";
 import undoIcon from "../../assets/images/sidePanelIcons/undoMove.svg";
 import redoIcon from "../../assets/images/sidePanelIcons/redoMove.svg";
@@ -97,7 +98,6 @@ const ChessInterface = (props: Props) => {
   const [sidePanelSection, setSidePanelSection] = useState<string | undefined>(
     "menu"
   );
-  // const [chessboardConfig, setChessboardConfig] = useState<IChessboardProps>();
 
   const Agora = useAgora();
   const Multiplayer = useChessMultiplayer({
@@ -302,6 +302,7 @@ const ChessInterface = (props: Props) => {
     }),
     sparePieces: editorMode,
   };
+
   return (
     <ScChessInterface dimension={dimension} editorMode={editorMode}>
       <div id="board-container" className="board-container">
@@ -309,7 +310,25 @@ const ChessInterface = (props: Props) => {
       </div>
       {/* {!editorMode && ( */}
       <ScChessSidePanel editorMode={editorMode}>
-        {!editorMode && (
+        {editorMode ? (
+          <EditorSidePanel>
+            <div className="title">Board Settings</div>
+            <div className="divider"></div>
+            <div className="slider">
+              <div>Manual</div>
+              <div>Upload</div>
+            </div>
+            <div className="input-fen">
+              <input
+                type="text"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  boardEditor.setFenPosition(e.target.value);
+                }}
+              />
+            </div>
+            <div className="output-fen">{boardEditor.fen}</div>
+          </EditorSidePanel>
+        ) : (
           <>
             {sidePanelSection === "menu" && (
               <SidePanelMenu undoMove={undoMove} redoMove={redoMove} />

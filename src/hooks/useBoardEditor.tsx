@@ -7,7 +7,7 @@ import {
   ShortMove,
   Square,
 } from "chess.js";
-import { objToFen, parseJSON, styleToString } from "../utils/utils";
+import { fenToObj, objToFen, parseJSON, styleToString } from "../utils/utils";
 import { BOARD_MOVE_UPDATE } from "../constants/chessMultiplayerMsgTypes";
 
 const Chess = require("chess.js");
@@ -52,6 +52,14 @@ const useBoardEditor = () => {
   //     });
   //   }, [state.boardPosition]);
 
+  const setFenPosition = (fenString: string) => {
+    setState({
+      ...state,
+      fen: fenString,
+      boardPosition: fenToObj(fenString),
+    });
+  };
+
   const onDrop = ({
     sourceSquare,
     targetSquare,
@@ -78,6 +86,7 @@ const useBoardEditor = () => {
     fen: state.fen,
     pgn: state.pgn,
     onDrop,
+    setFenPosition,
   };
 };
 

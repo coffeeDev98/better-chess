@@ -2,7 +2,7 @@ import Styled, { css } from "styled-components";
 
 const chessboardEditorSidePanelStyle = css`
   background-color: #2b2b34;
-  width: 370px;
+  width: 386px;
   border-radius: 0px 16px 16px 0px;
 `;
 
@@ -28,10 +28,62 @@ export const GamePlayPanel2 = Styled.div`
     }
 `;
 
+export const EditorSidePanel = Styled.div`
+  padding: 26px;
+  height: 100%;
+  .title {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    color: #FFFFFF;
+  }
+  .divider {
+    width: 100%;
+    height: 0.5px;
+    background: #FFFFFF;
+    opacity: 0.1;
+    margin: 13.5px 0;
+  }
+  .slider {
+    width: 100%;
+    height: 32px;
+    background: #E8EDF9;
+    border-radius: 10px;
+    display: flex;
+    margin-bottom: 156px;
+    div {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .input-fen {
+    display: flex;
+    width: 100%;
+    margin-bottom: 24px;
+    input {
+      width: 80%;
+      height: 32px;
+      border-radius: 8px;
+    }
+  }
+  .output-fen {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 32px;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 0px 8px;
+  }
+`;
+
 const chessboardEditorModeStyle = css`
   div[class$="-spare-pieces"] {
     position: absolute;
-    width: 270px;
+    width: 340px;
     display: flex;
     justify-content: space-between;
     div[data-testid^="spare-"]:nth-child(odd) {
@@ -41,12 +93,12 @@ const chessboardEditorModeStyle = css`
       background: #e8edf9;
     }
     div {
-      width: 100%;
+      /* width: 100%; */
       margin: 2px;
       border-radius: 12px;
       div {
         img {
-          padding: 10px 12px;
+          padding: 8px 10px;
           width: 26px !important;
           height: 28px !important;
         }
@@ -76,15 +128,17 @@ export const ScChessInterface = Styled.div<{
       ${({ editorMode }) => editorMode && chessboardEditorModeStyle}
       .black-spare-pieces {
         left: ${(props) =>
-          props.dimension ? `${props.dimension + 20}px` : "0px"};
+          props.dimension ? `${props.dimension + 32}px` : "0px"};
+        bottom: ${(props) =>
+          props.dimension ? `${props.dimension - 180}px` : "0px"};
 
         /* background:grey; */
       }
       .white-spare-pieces {
         left: ${(props) =>
-          props.dimension ? `${props.dimension + 20}px` : "0px"};
+          props.dimension ? `${props.dimension + 32}px` : "0px"};
         bottom: ${(props) =>
-          props.dimension ? `${props.dimension - 120}px` : "0px"};
+          props.dimension ? `${props.dimension - 240}px` : "0px"};
         /* background:grey; */
       }
     }  
