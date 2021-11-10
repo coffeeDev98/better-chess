@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/better-chess/static/css/main.247fcd8b.chunk.css",
-    "main.js": "/better-chess/static/js/main.6cf03539.chunk.js",
-    "main.js.map": "/better-chess/static/js/main.6cf03539.chunk.js.map",
+    "main.js": "/better-chess/static/js/main.641cf971.chunk.js",
+    "main.js.map": "/better-chess/static/js/main.641cf971.chunk.js.map",
     "runtime-main.js": "/better-chess/static/js/runtime-main.74a5c4ee.js",
     "runtime-main.js.map": "/better-chess/static/js/runtime-main.74a5c4ee.js.map",
     "static/js/2.8dfae732.chunk.js": "/better-chess/static/js/2.8dfae732.chunk.js",
@@ -35,6 +35,6 @@
     "static/js/runtime-main.74a5c4ee.js",
     "static/js/2.8dfae732.chunk.js",
     "static/css/main.247fcd8b.chunk.css",
-    "static/js/main.6cf03539.chunk.js"
+    "static/js/main.641cf971.chunk.js"
   ]
 }
