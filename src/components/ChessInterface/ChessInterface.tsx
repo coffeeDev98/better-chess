@@ -118,6 +118,8 @@ const ChessInterface = (props: Props) => {
     undoMove,
     redoMove,
   } = useChess(Agora, Multiplayer);
+  let firstChild: Element | null | undefined;
+  let lastChild: Element | null | undefined;
 
   useEffect(() => {
     updateDimensions();
@@ -125,15 +127,14 @@ const ChessInterface = (props: Props) => {
 
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
-
   useEffect(() => {
     const boardContainerDiv = window.document
       .getElementById("board-container")
       ?.querySelector<HTMLElement>("div");
     //   ?.querySelector("div")
 
-    const firstChild = boardContainerDiv?.firstElementChild;
-    const lastChild = boardContainerDiv?.lastElementChild;
+    firstChild = boardContainerDiv?.firstElementChild;
+    lastChild = boardContainerDiv?.lastElementChild;
 
     if (firstChild && lastChild) {
       firstChild.classList.add("black-spare-pieces");
@@ -277,8 +278,8 @@ const ChessInterface = (props: Props) => {
 
   let chessboardConfig: Partial<IChessboardProps> = {
     id: "board-0",
-    position: editorMode ? boardEditor.fen : fen,
-    // position: fen,
+    position: editorMode ? boardEditor.boardPosition : fen,
+    dropOffBoard: editorMode ? "trash" : "snapback",
     draggable: true,
     lightSquareStyle: { backgroundColor: "#E8EDF9" },
     darkSquareStyle: { backgroundColor: "#B7C0D8" },
@@ -291,6 +292,7 @@ const ChessInterface = (props: Props) => {
     width: dimension,
     ...(editorMode ? { onDrop: boardEditor.onDrop } : { onDrop }),
     // onDrop,
+    orientation: editorMode ? boardEditor.orientation : "white",
     ...(!editorMode && {
       getPosition: setBoardPosition,
       onMouseOverSquare,
@@ -318,15 +320,24 @@ const ChessInterface = (props: Props) => {
               <div>Manual</div>
               <div>Upload</div>
             </div>
+            <label htmlFor="inputFen">Fen</label>
             <div className="input-fen">
               <input
+                name="inputFen"
                 type="text"
+                value={boardEditor?.fen}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   boardEditor.setFenPosition(e.target.value);
                 }}
               />
             </div>
-            <div className="output-fen">{boardEditor.fen}</div>
+            {/* <label htmlFor="inputFen">Output</label>
+            <div className="output-fen"></div> */}
+            <div className="btn-panel">
+              <button onClick={boardEditor.reset}>Reset</button>
+              <button onClick={boardEditor.clear}>Clear</button>
+              <button onClick={boardEditor?.flip}>Flip</button>
+            </div>
           </EditorSidePanel>
         ) : (
           <>

@@ -12,11 +12,14 @@ import { BOARD_MOVE_UPDATE } from "../constants/chessMultiplayerMsgTypes";
 
 const Chess = require("chess.js");
 
-const defaultFen = "8/8/8/8/8/8/8/8";
+const defaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const emptyBoardFen = "8/8/8/8/8/8/8/8";
+
 const useBoardEditor = () => {
   const [chess] = useState<ChessInstance>(new Chess(defaultFen));
   const [state, setState] = useState<{
     fen: string;
+    orientation: "white" | "black";
     dropSquareStyle: any;
     squareStyles: any;
     pieceSquare: any;
@@ -26,6 +29,7 @@ const useBoardEditor = () => {
     pgn: any;
   }>({
     fen: defaultFen,
+    orientation: "white",
     // square styles for active drop square
     dropSquareStyle: {},
     // custom square styles
@@ -36,27 +40,45 @@ const useBoardEditor = () => {
     square: "",
     // array of past game moves
     history: [],
-    boardPosition: {},
+    boardPosition: fenToObj(defaultFen),
     pgn: [],
   });
 
-  useEffect(() => {
-    console.log("FEN: ", state.fen);
-  }, [state.fen]);
+  // useEffect(() => {
+  //   console.log("ORIENTATION: ", state.orientation);
+  // }, [state.orientation]);
 
-  //   useEffect(() => {
-  //     console.log("FEN STRING: ", objToFen(state.boardPosition));
-  //     setState({
-  //       ...state,
-  //       fen: objToFen(state.boardPosition) || "",
-  //     });
-  //   }, [state.boardPosition]);
+  // useEffect(() => {
+  //   console.log("BOARD_POSITION: ", objToFen(state.boardPosition));
+  // }, [state.boardPosition]);
 
   const setFenPosition = (fenString: string) => {
     setState({
       ...state,
       fen: fenString,
       boardPosition: fenToObj(fenString),
+    });
+  };
+
+  const reset = () => {
+    setState({
+      ...state,
+      fen: defaultFen,
+      boardPosition: fenToObj(defaultFen),
+    });
+  };
+  const clear = () => {
+    setState({
+      ...state,
+      fen: emptyBoardFen,
+      boardPosition: fenToObj(emptyBoardFen),
+    });
+  };
+
+  const flip = () => {
+    setState({
+      ...state,
+      orientation: state.orientation === "white" ? "black" : "white",
     });
   };
 
@@ -69,24 +91,40 @@ const useBoardEditor = () => {
     targetSquare: Square;
     piece?: string;
   }) => {
-    if (sourceSquare === "spare") {
-      const boardPosition = {
-        ...state.boardPosition,
-        [targetSquare]: piece,
-      };
-      setState({
-        ...state,
-        fen: objToFen(boardPosition) || state.fen,
-        boardPosition,
-      });
-    }
+    console.log("EDITOR_ON_DROP: ", sourceSquare, targetSquare, piece);
+    let boardPosition;
+    boardPosition =
+      sourceSquare === "spare"
+        ? {
+            ...state.boardPosition,
+            [targetSquare]: piece,
+          }
+        : {
+            ...Object.fromEntries(
+              Object.entries(state.boardPosition).filter(
+                ([key, value]: [key: any, value: any]) => key !== sourceSquare
+              )
+            ),
+            [targetSquare]: piece,
+          };
+    console.log("BOARD_POSITION: ", boardPosition);
+    setState({
+      ...state,
+      fen: objToFen(boardPosition) || state.fen,
+      boardPosition,
+    });
   };
 
   return {
     fen: state.fen,
     pgn: state.pgn,
+    boardPosition: state.boardPosition,
+    orientation: state.orientation,
     onDrop,
     setFenPosition,
+    reset,
+    clear,
+    flip,
   };
 };
 

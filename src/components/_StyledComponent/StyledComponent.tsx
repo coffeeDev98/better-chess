@@ -59,24 +59,52 @@ export const EditorSidePanel = Styled.div`
       justify-content: center;
     }
   }
-  .input-fen {
+  label {
+   margin-bottom: 8px;
+   font-weight: 500;
+   font-size: 13px;
+   line-height: 16px;
+   text-transform: uppercase;
+   color: #FFFFFF;
+   opacity: 0.4;
+ }
+ .input-fen {
+   display: flex;
+   width: 100%;
+   margin-bottom: 24px;
+   input {
+     width: 100%;
+     height: 32px;
+     border-radius: 8px;
+   }
+ }
+ .output-fen {
+   display: flex;
+   align-items: center;
+   width: 100%;
+   height: 32px;
+   border-radius: 8px;
+   background: #ffffff;
+   overflow: hidden;
+   margin-bottom: 24px;
+   text-overflow: ellipsis;
+ }
+  .btn-panel {
     display: flex;
     width: 100%;
-    margin-bottom: 24px;
-    input {
-      width: 80%;
-      height: 32px;
-      border-radius: 8px;
+    justify-content: space-between;
+    button {    
+      width: 32%;
+      height: 40px;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 17px;
+      line-height: 20px;
+      background: #5656FF;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-sizing: border-box;
+      border-radius: 10px;
     }
-  }
-  .output-fen {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 32px;
-    border-radius: 8px;
-    background: #ffffff;
-    padding: 0px 8px;
   }
 `;
 
