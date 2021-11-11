@@ -102,9 +102,9 @@ const useChess = (Agora: any, Multiplayer: any) => {
     undoMovesArray: [],
   });
 
-  // useEffect(() => {
-  //   console.log("PGN: ", state.pgn);
-  // }, [state.pgn]);
+  useEffect(() => {
+    console.log("SQUARE_STYLES: ", state.squareStyles);
+  }, [state.squareStyles]);
 
   useEffect(() => {
     console.log("UNDO MOVES: ", state.undoMovesArray);
@@ -205,7 +205,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
   const onMouseOverSquare = (square: Square) => {
     // get list of possible moves for this square
     let moves = chess.moves({
-      square: square,
+      square,
       verbose: true,
     });
 
@@ -213,8 +213,8 @@ const useChess = (Agora: any, Multiplayer: any) => {
     if (moves.length === 0) return;
 
     let squaresToHighlight = [];
-    for (var i = 0; i < moves.length; i++) {
-      squaresToHighlight.push(moves[i].to);
+    for (const move of moves) {
+      squaresToHighlight.push(move.to);
     }
     // console.log("SQUARESTOHIGHLIGHT: ", squaresToHighlight);
     highlightSquare(square, squaresToHighlight);
@@ -279,13 +279,10 @@ const useChess = (Agora: any, Multiplayer: any) => {
     const moves = chess.moves({ verbose: true });
     for (let i = 0, len = moves.length; i < len; i++) {
       /* eslint-disable-line */
-      if (
-        moves[i].flags.indexOf("p") !== -1 &&
-        moves[i].from === state.pieceSquare
-      ) {
+      if (moves[i].flags.includes("p") && moves[i].from === state.pieceSquare) {
         // setPendingMove([state.pieceSquare, targetSquare]);
         // console.log("opening promotional modal");
-        promotion(state.pieceSquare, square, "r");
+        promotion(state.pieceSquare, square, "q");
         // showPromotionModal();
         return;
       }
