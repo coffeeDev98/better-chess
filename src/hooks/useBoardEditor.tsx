@@ -48,15 +48,23 @@ const useBoardEditor = () => {
   //   console.log("ORIENTATION: ", state.orientation);
   // }, [state.orientation]);
 
-  // useEffect(() => {
-  //   console.log("BOARD_POSITION: ", objToFen(state.boardPosition));
-  // }, [state.boardPosition]);
+  useEffect(() => {
+    console.log("BOARD_POSITION: ", objToFen(state.boardPosition));
+  }, [state.boardPosition]);
 
   const setFenPosition = (fenString: string) => {
     setState({
       ...state,
       fen: fenString,
       boardPosition: fenToObj(fenString),
+    });
+  };
+
+  const setBoardPosition = (position: any) => {
+    setState({
+      ...state,
+      fen: objToFen(position) || state.fen,
+      boardPosition: position,
     });
   };
 
@@ -121,6 +129,7 @@ const useBoardEditor = () => {
     boardPosition: state.boardPosition,
     orientation: state.orientation,
     onDrop,
+    setBoardPosition,
     setFenPosition,
     reset,
     clear,

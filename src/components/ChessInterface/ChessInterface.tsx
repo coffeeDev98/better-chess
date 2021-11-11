@@ -290,11 +290,12 @@ const ChessInterface = (props: Props) => {
       position: "relative",
     },
     width: dimension,
+
+    getPosition: editorMode ? boardEditor.setBoardPosition : setBoardPosition,
     ...(editorMode ? { onDrop: boardEditor.onDrop } : { onDrop }),
     // onDrop,
     orientation: editorMode ? boardEditor.orientation : "white",
     ...(!editorMode && {
-      getPosition: setBoardPosition,
       onMouseOverSquare,
       onMouseOutSquare,
       squareStyles,
