@@ -44,6 +44,7 @@ export const EditorSidePanel = Styled.div`
     background: #FFFFFF;
     opacity: 0.1;
     margin: 13.5px 0;
+    margin-bottom: 156px;
   }
   .slider {
     width: 100%;
@@ -51,7 +52,7 @@ export const EditorSidePanel = Styled.div`
     background: #E8EDF9;
     border-radius: 10px;
     display: flex;
-    margin-bottom: 156px;
+    /* margin-bottom: 156px; */
     div {
       width: 50%;
       display: flex;
@@ -158,7 +159,7 @@ export const ScChessInterface = Styled.div<{
         left: ${(props) =>
           props.dimension ? `${props.dimension + 32}px` : "0px"};
         bottom: ${(props) =>
-          props.dimension ? `${props.dimension - 180}px` : "0px"};
+          props.dimension ? `${props.dimension - 130}px` : "0px"};
 
         /* background:grey; */
       }
@@ -166,7 +167,7 @@ export const ScChessInterface = Styled.div<{
         left: ${(props) =>
           props.dimension ? `${props.dimension + 32}px` : "0px"};
         bottom: ${(props) =>
-          props.dimension ? `${props.dimension - 240}px` : "0px"};
+          props.dimension ? `${props.dimension - 190}px` : "0px"};
         /* background:grey; */
       }
     }  

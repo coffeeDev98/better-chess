@@ -316,10 +316,10 @@ const ChessInterface = (props: Props) => {
           <EditorSidePanel>
             <div className="title">Board Settings</div>
             <div className="divider"></div>
-            <div className="slider">
+            {/* <div className="slider">
               <div>Manual</div>
               <div>Upload</div>
-            </div>
+            </div> */}
             <label htmlFor="inputFen">Fen</label>
             <div className="input-fen">
               <input
