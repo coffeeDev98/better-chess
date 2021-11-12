@@ -102,9 +102,19 @@ const useChess = (Agora: any, Multiplayer: any) => {
     undoMovesArray: [],
   });
 
+  // useEffect(() => {
+  //   console.log("SQUARE_STYLES: ", state.squareStyles);
+  // }, [state.squareStyles]);
+
   useEffect(() => {
-    console.log("SQUARE_STYLES: ", state.squareStyles);
-  }, [state.squareStyles]);
+    console.log(
+      "POSITION: ",
+      state.boardPosition,
+      chess.in_check(),
+      chess.turn()
+    );
+    chess.in_check() && inCheck(chess.turn());
+  }, [state.boardPosition]);
 
   useEffect(() => {
     console.log("UNDO MOVES: ", state.undoMovesArray);
@@ -140,7 +150,6 @@ const useChess = (Agora: any, Multiplayer: any) => {
   }, [Agora.channel]);
 
   const setBoardPosition = (position: any) => {
-    console.log("BOARD POSITION: ", position);
     setState({
       ...state,
       boardPosition: position,
@@ -163,9 +172,15 @@ const useChess = (Agora: any, Multiplayer: any) => {
   };
 
   const removeHighlightSquare = () => {
+    const currKingPieceSquare = Object.keys(state.boardPosition).find(
+      (key: string) => state.boardPosition[key] === `${chess.turn()}K`
+    );
     setState(({ pieceSquare, history }) => ({
       ...state,
-      squareStyles: squareStyling({ pieceSquare, history }),
+      squareStyles:
+        chess.in_check() && currKingPieceSquare
+          ? { [currKingPieceSquare]: state.squareStyles[currKingPieceSquare] }
+          : squareStyling({ pieceSquare, history }),
     }));
   };
 
@@ -200,7 +215,28 @@ const useChess = (Agora: any, Multiplayer: any) => {
     }));
   };
 
-  const onMouseOutSquare = (square: Square) => removeHighlightSquare();
+  const inCheck = (turn: string) => {
+    const checkedKingPos: any = Object.keys(state.boardPosition).find(
+      (key: string) => state.boardPosition[key] === `${turn}K`
+    );
+    console.log(
+      "INCHECK: ",
+      Object.keys(state.boardPosition).find(
+        (key: string) => state.boardPosition[key] === `${turn}K`
+      )
+    );
+    setState({
+      ...state,
+      squareStyles: {
+        ...state.squareStyles,
+        [checkedKingPos]: { backgroundColor: "red" },
+      },
+    });
+  };
+
+  const onMouseOutSquare = (square: Square) => {
+    removeHighlightSquare();
+  };
 
   const onMouseOverSquare = (square: Square) => {
     // get list of possible moves for this square
@@ -260,14 +296,16 @@ const useChess = (Agora: any, Multiplayer: any) => {
       history: chess.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history }),
     }));
-
     Multiplayer.updateBoard(move);
   };
 
   const onSquareClick = (square: Square) => {
     setState(({ history }) => ({
       ...state,
-      squareStyles: squareStyling({ pieceSquare: square, history }),
+      squareStyles: {
+        ...state.squareStyles,
+        ...squareStyling({ pieceSquare: square, history }),
+      },
       pieceSquare: square,
     }));
     let move = chess.move({
@@ -277,6 +315,13 @@ const useChess = (Agora: any, Multiplayer: any) => {
     });
 
     const moves = chess.moves({ verbose: true });
+    // const pieceMoves = chess.moves({ square, verbose: true });
+    // let squaresToHighlight = [];
+    // for (const m of pieceMoves) {
+    //   squaresToHighlight.push(m.to);
+    // }
+    // highlightSquare(square, squaresToHighlight);
+
     for (let i = 0, len = moves.length; i < len; i++) {
       /* eslint-disable-line */
       if (moves[i].flags.includes("p") && moves[i].from === state.pieceSquare) {
