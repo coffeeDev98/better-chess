@@ -28,6 +28,51 @@ export const GamePlayPanel2 = Styled.div`
     }
 `;
 
+export const ScChessHistoryPanel = Styled.div`
+  position: relative;
+  width: 176px;
+  height: 242px;
+  background: #2B2B34;
+  border: 1.46px solid #424242;
+  box-sizing: border-box;
+  padding: 10px;
+  .title {
+    display: flex;
+    img {
+      margin-right: 3px;
+    }
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 21px;
+    color: #ffffff; 
+    margin-bottom: 11px;
+  }
+  .pgn {
+    color: #ffffff;
+    font-size: 20px;
+  }
+`;
+
+export const ScSidePanelNav = Styled.div`
+  position: absolute;
+  /* bottom: -52px; */
+  bottom: 0px;
+  left: -1.46px;
+  width: 176px;
+  height: 51px;
+  background: #2B2B34;
+  border: 1.46px solid #424242;
+  /* border-top: 0px; */
+  border-bottom: 0px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  padding: 13.14px;
+  img {
+    cursor: pointer;
+  }
+`;
+
 export const EditorSidePanel = Styled.div`
   padding: 26px;
   height: 100%;
@@ -185,6 +230,6 @@ export const ScChessInterface = Styled.div<{
 }
 `;
 
-export const ScChessPgn = Styled.div`
-  color: white;
-`;
+// export const ScChessPgn = Styled.div`
+//   color: white;
+// `;

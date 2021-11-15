@@ -6,12 +6,14 @@ import useChessMultiplayer from "../../hooks/useChessMultiplayer";
 import useBoardEditor from "../../hooks/useBoardEditor";
 import { IChessboardProps } from "../../types/chessboardTypes";
 import {
-  ScChessPgn,
+  // ScChessPgn,
   ScChessInterface,
   ScChessSidePanel,
   GamePlayPanel1,
   GamePlayPanel2,
   EditorSidePanel,
+  ScChessHistoryPanel,
+  ScSidePanelNav,
 } from "../_StyledComponent/StyledComponent";
 import undoIcon from "../../assets/images/sidePanelIcons/undoMove.svg";
 import redoIcon from "../../assets/images/sidePanelIcons/redoMove.svg";
@@ -31,6 +33,8 @@ import bB from "../../assets/images/chessPieces/bB.svg";
 import bR from "../../assets/images/chessPieces/bR.svg";
 import bN from "../../assets/images/chessPieces/bN.svg";
 import bP from "../../assets/images/chessPieces/bP.svg";
+import arrowLeft from "../../assets/images/arrowLeft.svg";
+import arrowRight from "../../assets/images/arrowRight.svg";
 // import Chessboard from "../Chessboard/Chessboard";
 
 interface Props {}
@@ -43,9 +47,11 @@ interface ICustomPieceProps {
 const SidePanelMenu = ({
   undoMove,
   redoMove,
+  setSidePanelSection,
 }: {
   undoMove: any;
   redoMove: any;
+  setSidePanelSection: any;
 }) => (
   <>
     <GamePlayPanel1>
@@ -56,7 +62,13 @@ const SidePanelMenu = ({
         <img src={redoIcon} alt="Redo" />
       </div>
       <div>
-        <img src={historyIcon} alt="History" />
+        <img
+          src={historyIcon}
+          alt="History"
+          onClick={() => {
+            setSidePanelSection("history");
+          }}
+        />
       </div>
       <div>
         <img src={resetIcon} alt="Reset" />
@@ -64,14 +76,6 @@ const SidePanelMenu = ({
       <div>
         <img src={flipIcon} alt="Flip" />
       </div>
-      {/* <div>
-        <ScChessPgn>
-          {pgn.map?.(
-            (move: string, index: number) =>
-              index !== 0 && <ScChessPgn>{`${index}. ${move}`}</ScChessPgn>
-          )}
-        </ScChessPgn>
-      </div> */}
     </GamePlayPanel1>
     <GamePlayPanel2>
       <div>
@@ -306,6 +310,58 @@ const ChessInterface = (props: Props) => {
     sparePieces: editorMode,
   };
 
+  const RenderHistoryPanel = () => {
+    return (
+      <>
+        <ScChessHistoryPanel>
+          <div className="title">
+            <img src={historyIcon} alt="" />
+            History
+          </div>
+          <div className="pgn">
+            {pgn?.map?.(
+              (move: string, index: number) =>
+                index !== 0 && <div>{`${index}. ${move}`}</div>
+            )}
+          </div>
+          <ScSidePanelNav>
+            <img
+              src={arrowLeft}
+              alt=""
+              onClick={() => {
+                setSidePanelSection("menu");
+              }}
+            />
+            <img src={arrowRight} alt="" />
+          </ScSidePanelNav>
+        </ScChessHistoryPanel>
+      </>
+    );
+  };
+
+  const renderSidePanel = () => {
+    switch (sidePanelSection) {
+      case "menu":
+        return (
+          <SidePanelMenu
+            undoMove={undoMove}
+            redoMove={redoMove}
+            setSidePanelSection={setSidePanelSection}
+          />
+        );
+      case "history":
+        return <RenderHistoryPanel />;
+
+      default:
+        return (
+          <SidePanelMenu
+            undoMove={undoMove}
+            redoMove={redoMove}
+            setSidePanelSection={setSidePanelSection}
+          />
+        );
+    }
+  };
   return (
     <ScChessInterface dimension={dimension} editorMode={editorMode}>
       <div id="board-container" className="board-container">
@@ -341,11 +397,7 @@ const ChessInterface = (props: Props) => {
             </div>
           </EditorSidePanel>
         ) : (
-          <>
-            {sidePanelSection === "menu" && (
-              <SidePanelMenu undoMove={undoMove} redoMove={redoMove} />
-            )}
-          </>
+          <>{renderSidePanel()}</>
         )}
       </ScChessSidePanel>
       {/* )} */}
