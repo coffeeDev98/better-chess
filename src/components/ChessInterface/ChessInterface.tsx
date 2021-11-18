@@ -14,6 +14,7 @@ import {
   EditorSidePanel,
   ScChessHistoryPanel,
   ScSidePanelNav,
+  ScPromotionModal,
 } from "../_StyledComponent/StyledComponent";
 import undoIcon from "../../assets/images/sidePanelIcons/undoMove.svg";
 import redoIcon from "../../assets/images/sidePanelIcons/redoMove.svg";
@@ -35,6 +36,7 @@ import bN from "../../assets/images/chessPieces/bN.svg";
 import bP from "../../assets/images/chessPieces/bP.svg";
 import arrowLeft from "../../assets/images/arrowLeft.svg";
 import arrowRight from "../../assets/images/arrowRight.svg";
+import { Square } from "chess.js";
 // import Chessboard from "../Chessboard/Chessboard";
 
 interface Props {}
@@ -47,10 +49,14 @@ interface ICustomPieceProps {
 const SidePanelMenu = ({
   undoMove,
   redoMove,
+  flip,
+  reset,
   setSidePanelSection,
 }: {
   undoMove: any;
   redoMove: any;
+  flip: any;
+  reset: any;
   setSidePanelSection: any;
 }) => (
   <>
@@ -71,10 +77,10 @@ const SidePanelMenu = ({
         />
       </div>
       <div>
-        <img src={resetIcon} alt="Reset" />
+        <img src={resetIcon} alt="Reset" onClick={reset} />
       </div>
       <div>
-        <img src={flipIcon} alt="Flip" />
+        <img src={flipIcon} alt="Flip" onClick={flip} />
       </div>
     </GamePlayPanel1>
     <GamePlayPanel2>
@@ -109,9 +115,15 @@ const ChessInterface = (props: Props) => {
   });
   const boardEditor = useBoardEditor();
   const {
+    turn,
     setBoardPosition,
+    reset,
+    flip,
+    orientation,
+    pendingMove,
     fen,
     pgn,
+    promotionModal,
     onDrop,
     onMouseOverSquare,
     onMouseOutSquare,
@@ -121,6 +133,7 @@ const ChessInterface = (props: Props) => {
     onSquareRightClick,
     undoMove,
     redoMove,
+    promotion,
   } = useChess(Agora, Multiplayer);
   let firstChild: Element | null | undefined;
   let lastChild: Element | null | undefined;
@@ -298,7 +311,7 @@ const ChessInterface = (props: Props) => {
     getPosition: editorMode ? boardEditor.setBoardPosition : setBoardPosition,
     ...(editorMode ? { onDrop: boardEditor.onDrop } : { onDrop }),
     // onDrop,
-    orientation: editorMode ? boardEditor.orientation : "white",
+    orientation: editorMode ? boardEditor.orientation : orientation || "white",
     ...(!editorMode && {
       onMouseOverSquare,
       onMouseOutSquare,
@@ -312,30 +325,28 @@ const ChessInterface = (props: Props) => {
 
   const RenderHistoryPanel = () => {
     return (
-      <>
-        <ScChessHistoryPanel>
-          <div className="title">
-            <img src={historyIcon} alt="" />
-            History
-          </div>
-          <div className="pgn">
-            {pgn?.map?.(
-              (move: string, index: number) =>
-                index !== 0 && <div>{`${index}. ${move}`}</div>
-            )}
-          </div>
-          <ScSidePanelNav>
-            <img
-              src={arrowLeft}
-              alt=""
-              onClick={() => {
-                setSidePanelSection("menu");
-              }}
-            />
-            <img src={arrowRight} alt="" />
-          </ScSidePanelNav>
-        </ScChessHistoryPanel>
-      </>
+      <ScChessHistoryPanel>
+        <div className="title">
+          <img src={historyIcon} alt="" />
+          History
+        </div>
+        <div className="pgn">
+          {pgn?.map?.(
+            (move: string, index: number) =>
+              index !== 0 && <div>{`${index}. ${move}`}</div>
+          )}
+        </div>
+        <ScSidePanelNav>
+          <img
+            src={arrowLeft}
+            alt=""
+            onClick={() => {
+              setSidePanelSection("menu");
+            }}
+          />
+          <img src={arrowRight} alt="" />
+        </ScSidePanelNav>
+      </ScChessHistoryPanel>
     );
   };
 
@@ -346,6 +357,8 @@ const ChessInterface = (props: Props) => {
           <SidePanelMenu
             undoMove={undoMove}
             redoMove={redoMove}
+            reset={reset}
+            flip={flip}
             setSidePanelSection={setSidePanelSection}
           />
         );
@@ -357,14 +370,87 @@ const ChessInterface = (props: Props) => {
           <SidePanelMenu
             undoMove={undoMove}
             redoMove={redoMove}
+            reset={reset}
+            flip={flip}
             setSidePanelSection={setSidePanelSection}
           />
         );
     }
   };
+  const renderPromotionModal = () => {
+    return (
+      <ScPromotionModal>
+        <div>
+          <img
+            src={turn === "w" ? wQ : bQ}
+            alt=""
+            width={dimension && dimension / 8}
+            height={dimension && dimension / 8}
+            onClick={() => {
+              pendingMove &&
+                promotion(
+                  pendingMove.sourceSquare,
+                  pendingMove.targetSquare,
+                  "q"
+                );
+            }}
+          />
+        </div>
+        <div>
+          <img
+            src={turn === "w" ? wB : bB}
+            alt=""
+            width={dimension && dimension / 8}
+            height={dimension && dimension / 8}
+            onClick={() => {
+              pendingMove &&
+                promotion(
+                  pendingMove.sourceSquare,
+                  pendingMove.targetSquare,
+                  "b"
+                );
+            }}
+          />
+        </div>
+        <div>
+          <img
+            src={turn === "w" ? wR : bR}
+            alt=""
+            width={dimension && dimension / 8}
+            height={dimension && dimension / 8}
+            onClick={() => {
+              pendingMove &&
+                promotion(
+                  pendingMove.sourceSquare,
+                  pendingMove.targetSquare,
+                  "r"
+                );
+            }}
+          />
+        </div>
+        <div>
+          <img
+            src={turn === "w" ? wN : bN}
+            alt=""
+            width={dimension && dimension / 8}
+            height={dimension && dimension / 8}
+            onClick={() => {
+              pendingMove &&
+                promotion(
+                  pendingMove.sourceSquare,
+                  pendingMove.targetSquare,
+                  "n"
+                );
+            }}
+          />
+        </div>
+      </ScPromotionModal>
+    );
+  };
   return (
     <ScChessInterface dimension={dimension} editorMode={editorMode}>
       <div id="board-container" className="board-container">
+        {promotionModal && renderPromotionModal()}
         <NativeChessboard {...chessboardConfig} />
       </div>
       {/* {!editorMode && ( */}

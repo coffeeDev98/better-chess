@@ -16,7 +16,7 @@ import {
   SetPremoveMetadata,
   Elements,
 } from "chessground/types";
-import { parseJSON } from "../utils/utils";
+import { fenToObj, parseJSON } from "../utils/utils";
 import {
   BOARD_MOVE_UNDO,
   BOARD_MOVE_UPDATE,
@@ -71,12 +71,16 @@ interface IEvents {
   insert?: (elements: Elements) => void; // when the board DOM has been (re)inserted
 }
 
+const defaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 const useChess = (Agora: any, Multiplayer: any) => {
-  const [chess] = useState<ChessInstance>(
-    new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-  );
+  const [chess] = useState<ChessInstance>(new Chess(defaultFen));
+  const [promotionModal, setPromotionModal] = useState<boolean>(false);
   const [state, setState] = useState<{
+    turn: "w" | "b";
     fen: string;
+    orientation: "white" | "black";
+    pendingMove: { sourceSquare: Square; targetSquare: Square } | undefined;
     dropSquareStyle: any;
     squareStyles: any;
     pieceSquare: any;
@@ -86,7 +90,10 @@ const useChess = (Agora: any, Multiplayer: any) => {
     pgn: any;
     undoMovesArray: Move[];
   }>({
+    turn: chess.turn() || "w",
     fen: "start",
+    orientation: "white",
+    pendingMove: undefined,
     // square styles for active drop square
     dropSquareStyle: {},
     // custom square styles
@@ -148,11 +155,32 @@ const useChess = (Agora: any, Multiplayer: any) => {
       });
     }
   }, [Agora.channel]);
+  useEffect(() => {
+    console.log("PENDING_MOVE: ", state.pendingMove);
+  }, [state.pendingMove]);
+
+  const showPromotionModal = () => setPromotionModal(true);
+  const hidePromotionModal = () => setPromotionModal(false);
 
   const setBoardPosition = (position: any) => {
     setState({
       ...state,
       boardPosition: position,
+    });
+  };
+
+  const reset = () => {
+    setState({
+      ...state,
+      fen: defaultFen,
+      boardPosition: fenToObj(defaultFen),
+    });
+  };
+
+  const flip = () => {
+    setState({
+      ...state,
+      orientation: state.orientation === "white" ? "black" : "white",
     });
   };
 
@@ -167,8 +195,9 @@ const useChess = (Agora: any, Multiplayer: any) => {
     setState({
       ...state,
       fen: chess.fen(),
+      pendingMove: undefined,
     });
-    // hidePromotionModal();
+    hidePromotionModal();
   };
 
   const removeHighlightSquare = () => {
@@ -279,10 +308,13 @@ const useChess = (Agora: any, Multiplayer: any) => {
         moves[i].flags.indexOf("p") !== -1 &&
         moves[i].from === sourceSquare
       ) {
-        // setPendingMove([sourceSquare, targetSquare]);
+        setState({
+          ...state,
+          pendingMove: { sourceSquare, targetSquare },
+        });
         // console.log("opening promotional modal");
-        promotion(sourceSquare, targetSquare, "r");
-        // showPromotionModal();
+        // promotion(sourceSquare, targetSquare, "r");
+        showPromotionModal();
         return;
       }
     }
@@ -291,6 +323,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
     if (move === null) return;
     setState(({ history, pieceSquare }) => ({
       ...state,
+      turn: chess.turn(),
       fen: chess.fen(),
       pgn: chess.pgn()?.split(/\d\./),
       history: chess.history({ verbose: true }),
@@ -325,10 +358,15 @@ const useChess = (Agora: any, Multiplayer: any) => {
     for (let i = 0, len = moves.length; i < len; i++) {
       /* eslint-disable-line */
       if (moves[i].flags.includes("p") && moves[i].from === state.pieceSquare) {
-        // setPendingMove([state.pieceSquare, targetSquare]);
-        // console.log("opening promotional modal");
-        promotion(state.pieceSquare, square, "q");
-        // showPromotionModal();
+        setState({
+          ...state,
+          pendingMove: {
+            sourceSquare: state.pieceSquare,
+            targetSquare: square,
+          },
+        });
+        // promotion(state.pieceSquare, square, "q");
+        showPromotionModal();
         return;
       }
     }
@@ -338,6 +376,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
 
     setState({
       ...state,
+      turn: chess.turn(),
       fen: chess.fen(),
       pgn: chess.pgn()?.split(/\d\./),
       history: chess.history({ verbose: true }),
@@ -397,18 +436,25 @@ const useChess = (Agora: any, Multiplayer: any) => {
   };
 
   return {
-    setBoardPosition,
+    turn: state.turn,
     fen: state.fen,
     pgn: state.pgn,
+    orientation: state.orientation,
+    squareStyles: state.squareStyles,
+    pendingMove: state.pendingMove,
+    promotionModal,
+    setBoardPosition,
+    reset,
+    flip,
     onDrop,
     onMouseOverSquare,
     onMouseOutSquare,
-    squareStyles: state.squareStyles,
     onDragOverSquare,
     onSquareClick,
     onSquareRightClick,
     undoMove,
     redoMove,
+    promotion,
   };
 };
 

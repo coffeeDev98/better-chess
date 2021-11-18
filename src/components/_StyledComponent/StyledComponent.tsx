@@ -181,6 +181,35 @@ const chessboardEditorModeStyle = css`
   }
 `;
 
+export const ScPromotionModal = Styled.div`
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2B2B34;
+  padding: 10px;
+  border-radius: 12px;
+  z-index: 6;
+  div:nth-child(odd) {
+      background: #b7c0d8;
+    }
+  div:nth-child(even) {
+    background: #e8edf9;
+  }
+  div {
+    margin: 2px;
+    border-radius: 12px;
+    img {
+      cursor: pointer;
+      padding: 8px 10px;
+      width: 26px ;
+      height: 28px;
+    }
+  }
+`;
+
 export const ScChessInterface = Styled.div<{
   dimension: number | undefined;
   editorMode?: boolean;
