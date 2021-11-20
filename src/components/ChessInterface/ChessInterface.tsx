@@ -36,8 +36,6 @@ import bN from "../../assets/images/chessPieces/bN.svg";
 import bP from "../../assets/images/chessPieces/bP.svg";
 import arrowLeft from "../../assets/images/arrowLeft.svg";
 import arrowRight from "../../assets/images/arrowRight.svg";
-import { Square } from "chess.js";
-// import Chessboard from "../Chessboard/Chessboard";
 
 interface Props {}
 
@@ -92,11 +90,6 @@ const SidePanelMenu = ({
 );
 
 const ChessInterface = (props: Props) => {
-  // const Agora = useAgora();
-  // const AgoraChannel: RtmChannel | undefined | null = Agora.channel;
-  // const Multiplayer = useChessMultiplayer({
-  //   Agora: Agora,
-  // });
   const [dimension, setDimension] = useState<number>();
   // const [undoMove, setUndoMove] = useState<boolean>(false);
   const [editorMode, setEditorMode] = useState<boolean>(
@@ -108,6 +101,7 @@ const ChessInterface = (props: Props) => {
   const [sidePanelSection, setSidePanelSection] = useState<string | undefined>(
     "menu"
   );
+  // const [overlay, setOverlay] = useState(new ChessboardArrows("board-0"));
 
   const Agora = useAgora();
   const Multiplayer = useChessMultiplayer({
@@ -160,6 +154,9 @@ const ChessInterface = (props: Props) => {
       lastChild.setAttribute("style", "");
     }
   }, [window.document.getElementById("board-container")]);
+  // useEffect(() => {
+  //   setOverlay(new ChessboardArrows("board-0"));
+  // }, [window.document.getElementById("board-0")]);
 
   // const toggleUndoMove = () => setUndoMove(!undoMove);
 
@@ -377,80 +374,79 @@ const ChessInterface = (props: Props) => {
         );
     }
   };
-  const renderPromotionModal = () => {
-    return (
-      <ScPromotionModal>
-        <div>
-          <img
-            src={turn === "w" ? wQ : bQ}
-            alt=""
-            width={dimension && dimension / 8}
-            height={dimension && dimension / 8}
-            onClick={() => {
-              pendingMove &&
-                promotion(
-                  pendingMove.sourceSquare,
-                  pendingMove.targetSquare,
-                  "q"
-                );
-            }}
-          />
-        </div>
-        <div>
-          <img
-            src={turn === "w" ? wB : bB}
-            alt=""
-            width={dimension && dimension / 8}
-            height={dimension && dimension / 8}
-            onClick={() => {
-              pendingMove &&
-                promotion(
-                  pendingMove.sourceSquare,
-                  pendingMove.targetSquare,
-                  "b"
-                );
-            }}
-          />
-        </div>
-        <div>
-          <img
-            src={turn === "w" ? wR : bR}
-            alt=""
-            width={dimension && dimension / 8}
-            height={dimension && dimension / 8}
-            onClick={() => {
-              pendingMove &&
-                promotion(
-                  pendingMove.sourceSquare,
-                  pendingMove.targetSquare,
-                  "r"
-                );
-            }}
-          />
-        </div>
-        <div>
-          <img
-            src={turn === "w" ? wN : bN}
-            alt=""
-            width={dimension && dimension / 8}
-            height={dimension && dimension / 8}
-            onClick={() => {
-              pendingMove &&
-                promotion(
-                  pendingMove.sourceSquare,
-                  pendingMove.targetSquare,
-                  "n"
-                );
-            }}
-          />
-        </div>
-      </ScPromotionModal>
-    );
-  };
+  const renderPromotionModal = (
+    <ScPromotionModal>
+      <div>
+        <img
+          src={turn === "w" ? wQ : bQ}
+          alt=""
+          width={dimension && dimension / 8}
+          height={dimension && dimension / 8}
+          onClick={() => {
+            pendingMove &&
+              promotion(
+                pendingMove.sourceSquare,
+                pendingMove.targetSquare,
+                "q"
+              );
+          }}
+        />
+      </div>
+      <div>
+        <img
+          src={turn === "w" ? wB : bB}
+          alt=""
+          width={dimension && dimension / 8}
+          height={dimension && dimension / 8}
+          onClick={() => {
+            pendingMove &&
+              promotion(
+                pendingMove.sourceSquare,
+                pendingMove.targetSquare,
+                "b"
+              );
+          }}
+        />
+      </div>
+      <div>
+        <img
+          src={turn === "w" ? wR : bR}
+          alt=""
+          width={dimension && dimension / 8}
+          height={dimension && dimension / 8}
+          onClick={() => {
+            pendingMove &&
+              promotion(
+                pendingMove.sourceSquare,
+                pendingMove.targetSquare,
+                "r"
+              );
+          }}
+        />
+      </div>
+      <div>
+        <img
+          src={turn === "w" ? wN : bN}
+          alt=""
+          width={dimension && dimension / 8}
+          height={dimension && dimension / 8}
+          onClick={() => {
+            pendingMove &&
+              promotion(
+                pendingMove.sourceSquare,
+                pendingMove.targetSquare,
+                "n"
+              );
+          }}
+        />
+      </div>
+    </ScPromotionModal>
+  );
+
   return (
     <ScChessInterface dimension={dimension} editorMode={editorMode}>
       <div id="board-container" className="board-container">
-        {promotionModal && renderPromotionModal()}
+        {promotionModal && renderPromotionModal}
         <NativeChessboard {...chessboardConfig} />
       </div>
       {/* {!editorMode && ( */}
