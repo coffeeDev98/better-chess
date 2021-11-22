@@ -155,10 +155,13 @@ const ChessInterface = (props: Props) => {
     }
   }, [window.document.getElementById("board-container")]);
   // useEffect(() => {
-  //   setOverlay(new ChessboardArrows("board-0"));
-  // }, [window.document.getElementById("board-0")]);
-
-  // const toggleUndoMove = () => setUndoMove(!undoMove);
+  //   pgn.forEach((movePair: string, index: number) => {
+  //     console.log(
+  //       "MOVE_PAIR: ",
+  //       movePair.split(" ").filter((item: string) => item !== "")
+  //     );
+  //   });
+  // }, [pgn]);
 
   const updateDimensions = () => {
     setDimension(
@@ -321,18 +324,33 @@ const ChessInterface = (props: Props) => {
   };
 
   const RenderHistoryPanel = () => {
+    // const movesArray = pgn.map((movePair: string, index: number) =>
+    //   movePair.split(" ").filter((item: string) => item !== "")
+    // );
     return (
       <ScChessHistoryPanel>
         <div className="title">
           <img src={historyIcon} alt="" />
           History
         </div>
-        <div className="pgn">
+        <table className="pgn">
           {pgn?.map?.(
             (move: string, index: number) =>
-              index !== 0 && <div>{`${index}. ${move}`}</div>
+              index !== 0 && (
+                <tr>
+                  <td>{index}</td>
+                  {/* <div> */}
+                  {move
+                    .split(" ")
+                    .filter((item: string) => item !== "")
+                    .map((singleMove: string, i: number) => (
+                      <td>{singleMove}</td>
+                    ))}
+                  {/* </div> */}
+                </tr>
+              )
           )}
-        </div>
+        </table>
         <ScSidePanelNav>
           <img
             src={arrowLeft}

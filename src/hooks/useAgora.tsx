@@ -62,7 +62,7 @@ const useAgora = () => {
     const message = {
       uid: playerMeta.uid,
       json: data || {},
-      type: type,
+      type,
     };
     console.log(agoraUtils.messageParser(message));
     channel?.sendMessage(agoraUtils.messageParser(message)).then(() => {});

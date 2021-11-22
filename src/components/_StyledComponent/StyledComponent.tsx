@@ -35,9 +35,10 @@ export const ScChessHistoryPanel = Styled.div`
   background: #2B2B34;
   border: 1.46px solid #424242;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 10px 0px;
   .title {
     display: flex;
+    margin-left: 10px;
     img {
       margin-right: 3px;
     }
@@ -49,7 +50,22 @@ export const ScChessHistoryPanel = Styled.div`
   }
   .pgn {
     color: #ffffff;
-    font-size: 20px;
+    font-size: 14px;
+    width: 100%;
+    border-spacing: 0px;
+    tr:nth-child(odd) {
+      background: #3E3E48;
+      /* padding: 0 10px; */
+    }
+    tr:nth-child(even) {}
+    tr {
+      height: 30px;
+      td:first-child {
+        width: 7px;
+        padding: 0px 10px;
+      }
+      
+    }
   }
 `;
 
