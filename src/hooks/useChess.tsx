@@ -87,7 +87,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
     square: string;
     history: Move[];
     boardPosition: any;
-    pgn: any;
+    pgn: string;
     undoMovesArray: Move[];
   }>({
     turn: chess.turn() || "w",
@@ -105,7 +105,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
     // array of past game moves
     history: [],
     boardPosition: {},
-    pgn: [],
+    pgn: "",
     undoMovesArray: [],
   });
 
@@ -325,7 +325,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
       ...state,
       turn: chess.turn(),
       fen: chess.fen(),
-      pgn: chess.pgn()?.split(/\d\./),
+      pgn: chess.pgn(),
       history: chess.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history }),
     }));
@@ -378,7 +378,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
       ...state,
       turn: chess.turn(),
       fen: chess.fen(),
-      pgn: chess.pgn()?.split(/\d\./),
+      pgn: chess.pgn(),
       history: chess.history({ verbose: true }),
       pieceSquare: "",
     });
@@ -424,7 +424,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
         setState(({ history, pieceSquare }) => ({
           ...state,
           fen: chess.fen(),
-          pgn: chess.pgn()?.split(/\d\./),
+          pgn: chess.pgn(),
           history: chess.history({ verbose: true }),
           squareStyles: squareStyling({ pieceSquare, history }),
           // undoMovesArray: ,
@@ -439,6 +439,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
     turn: state.turn,
     fen: state.fen,
     pgn: state.pgn,
+    history: state.history,
     orientation: state.orientation,
     squareStyles: state.squareStyles,
     pendingMove: state.pendingMove,

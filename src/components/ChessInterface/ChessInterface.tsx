@@ -1,4 +1,4 @@
-import React, { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import NativeChessboard from "chessboardjsx";
 import useChess from "../../hooks/useChess";
 import useAgora from "../../hooks/useAgora";
@@ -117,6 +117,7 @@ const ChessInterface = (props: Props) => {
     pendingMove,
     fen,
     pgn,
+    history,
     promotionModal,
     onDrop,
     onMouseOverSquare,
@@ -155,13 +156,9 @@ const ChessInterface = (props: Props) => {
     }
   }, [window.document.getElementById("board-container")]);
   // useEffect(() => {
-  //   pgn.forEach((movePair: string, index: number) => {
-  //     console.log(
-  //       "MOVE_PAIR: ",
-  //       movePair.split(" ").filter((item: string) => item !== "")
-  //     );
-  //   });
-  // }, [pgn]);
+  //   console.log("HISTORY: ", history);
+  // }, [history]);
+  // useEffect(() => {
 
   const updateDimensions = () => {
     setDimension(
@@ -324,9 +321,6 @@ const ChessInterface = (props: Props) => {
   };
 
   const RenderHistoryPanel = () => {
-    // const movesArray = pgn.map((movePair: string, index: number) =>
-    //   movePair.split(" ").filter((item: string) => item !== "")
-    // );
     return (
       <ScChessHistoryPanel>
         <div className="title">
@@ -334,7 +328,7 @@ const ChessInterface = (props: Props) => {
           History
         </div>
         <table className="pgn">
-          {pgn?.map?.(
+          {pgn?.split(/\d\./)?.map?.(
             (move: string, index: number) =>
               index !== 0 && (
                 <tr>
