@@ -22,8 +22,9 @@ import {
   BOARD_MOVE_UPDATE,
 } from "../constants/chessMultiplayerMsgTypes";
 
+const Chess = require("chess.js");
 // const Chess = require("../packages/chess-es6.js/src/chess.js");
-const Chess = require("../packages/chess.js/chess.js");
+// const Chess = require("../packages/chess.js/chess.js");
 interface IMovable {
   free?: boolean; // all moves are valid - board editor
   color?: Color | "both"; // color that can move. white | black | both | undefined
