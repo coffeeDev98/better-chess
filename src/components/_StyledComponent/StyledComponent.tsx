@@ -1,4 +1,4 @@
-import Styled, { css } from "styled-components";
+import styled, { css } from "styled-components";
 
 const chessboardEditorSidePanelStyle = css`
   background-color: #2b2b34;
@@ -6,7 +6,7 @@ const chessboardEditorSidePanelStyle = css`
   border-radius: 0px 16px 16px 0px;
 `;
 
-export const ScChessSidePanel = Styled.div<{
+export const ScChessSidePanel = styled.div<{
   editorMode: boolean;
 }>`
   display: flex;
@@ -15,24 +15,24 @@ export const ScChessSidePanel = Styled.div<{
   ${({ editorMode }) => editorMode && chessboardEditorSidePanelStyle}
 `;
 
-export const GamePlayPanel1 = Styled.div`
+export const GamePlayPanel1 = styled.div`
   div {
     padding: 14px;
     cursor: pointer;
   }
 `;
-export const GamePlayPanel2 = Styled.div`
+export const GamePlayPanel2 = styled.div`
   div {
-      padding: 14px;
-      cursor: pointer;
-    }
+    padding: 14px;
+    cursor: pointer;
+  }
 `;
 
-export const ScChessHistoryPanel = Styled.div`
+export const ScChessHistoryPanel = styled.div`
   position: relative;
-  width: 176px;
-  height: 242px;
-  background: #2B2B34;
+  /* width: 176px; */
+  /* height: 242px; */
+  background: #2b2b34;
   border: 1.46px solid #424242;
   box-sizing: border-box;
   padding: 10px 0px;
@@ -45,38 +45,51 @@ export const ScChessHistoryPanel = Styled.div`
     font-weight: bold;
     font-size: 18px;
     line-height: 21px;
-    color: #ffffff; 
+    color: #ffffff;
     margin-bottom: 11px;
   }
-  .pgn {
-    color: #ffffff;
-    font-size: 14px;
+  .pgn-section {
     width: 100%;
-    border-spacing: 0px;
-    tr:nth-child(odd) {
-      background: #3E3E48;
-      /* padding: 0 10px; */
+    padding: 10px;
+    /* .error {
+      display: none;
+      height: 0px;
     }
-    tr:nth-child(even) {}
-    tr {
-      height: 30px;
-      td:first-child {
-        width: 7px;
-        padding: 0px 10px;
+    .outerBoard {
+      display: none;
+      height: 0px; 
+    }*/
+    .moves {
+      color: white;
+      font-size: 10px;
+      move-number {}
+      move {
+        color: white;
       }
-      
+    }
+    .comment {
+      .commentRadio {
+        color: white;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 5px 0px;
+          margin-right: 12px;
+        }
+      }
     }
   }
 `;
 
-export const ScSidePanelNav = Styled.div`
-  position: absolute;
+export const ScSidePanelNav = styled.div`
+  position: relative;
   /* bottom: -52px; */
-  bottom: 0px;
+  bottom: -1px;
   left: -1.46px;
-  width: 176px;
+  /* width: 176px; */
   height: 51px;
-  background: #2B2B34;
+  background: #2b2b34;
   border: 1.46px solid #424242;
   /* border-top: 0px; */
   border-bottom: 0px;
@@ -89,7 +102,7 @@ export const ScSidePanelNav = Styled.div`
   }
 `;
 
-export const EditorSidePanel = Styled.div`
+export const EditorSidePanel = styled.div`
   padding: 26px;
   height: 100%;
   .title {
@@ -97,12 +110,12 @@ export const EditorSidePanel = Styled.div`
     font-weight: bold;
     font-size: 24px;
     line-height: 29px;
-    color: #FFFFFF;
+    color: #ffffff;
   }
   .divider {
     width: 100%;
     height: 0.5px;
-    background: #FFFFFF;
+    background: #ffffff;
     opacity: 0.1;
     margin: 13.5px 0;
     margin-bottom: 156px;
@@ -110,7 +123,7 @@ export const EditorSidePanel = Styled.div`
   .slider {
     width: 100%;
     height: 32px;
-    background: #E8EDF9;
+    background: #e8edf9;
     border-radius: 10px;
     display: flex;
     /* margin-bottom: 156px; */
@@ -122,47 +135,47 @@ export const EditorSidePanel = Styled.div`
     }
   }
   label {
-   margin-bottom: 8px;
-   font-weight: 500;
-   font-size: 13px;
-   line-height: 16px;
-   text-transform: uppercase;
-   color: #FFFFFF;
-   opacity: 0.4;
- }
- .input-fen {
-   display: flex;
-   width: 100%;
-   margin-bottom: 24px;
-   input {
-     width: 100%;
-     height: 32px;
-     border-radius: 8px;
-   }
- }
- .output-fen {
-   display: flex;
-   align-items: center;
-   width: 100%;
-   height: 32px;
-   border-radius: 8px;
-   background: #ffffff;
-   overflow: hidden;
-   margin-bottom: 24px;
-   text-overflow: ellipsis;
- }
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: #ffffff;
+    opacity: 0.4;
+  }
+  .input-fen {
+    display: flex;
+    width: 100%;
+    margin-bottom: 24px;
+    input {
+      width: 100%;
+      height: 32px;
+      border-radius: 8px;
+    }
+  }
+  .output-fen {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 32px;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+    margin-bottom: 24px;
+    text-overflow: ellipsis;
+  }
   .btn-panel {
     display: flex;
     width: 100%;
     justify-content: space-between;
-    button {    
+    button {
       width: 32%;
       height: 40px;
       color: #ffffff;
       font-weight: 600;
       font-size: 17px;
       line-height: 20px;
-      background: #5656FF;
+      background: #5656ff;
       border: 1px solid rgba(255, 255, 255, 0.4);
       box-sizing: border-box;
       border-radius: 10px;
@@ -197,20 +210,20 @@ const chessboardEditorModeStyle = css`
   }
 `;
 
-export const ScPromotionModal = Styled.div`
+export const ScPromotionModal = styled.div`
   display: flex;
   flex-direction: row;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #2B2B34;
+  background: #2b2b34;
   padding: 10px;
   border-radius: 12px;
   z-index: 6;
   div:nth-child(odd) {
-      background: #b7c0d8;
-    }
+    background: #b7c0d8;
+  }
   div:nth-child(even) {
     background: #e8edf9;
   }
@@ -220,13 +233,13 @@ export const ScPromotionModal = Styled.div`
     img {
       cursor: pointer;
       padding: 8px 10px;
-      width: 26px ;
+      width: 26px;
       height: 28px;
     }
   }
 `;
 
-export const ScChessInterface = Styled.div<{
+export const ScChessInterface = styled.div<{
   dimension: number | undefined;
   editorMode?: boolean;
 }>`
@@ -238,7 +251,7 @@ export const ScChessInterface = Styled.div<{
   grid-template-columns: 66% 37%;
   grid-template-areas: "board sidePanel";
   .board-container {
-    position:relative;
+    position: relative;
     min-width: 500px;
     min-height: 500px;
     grid-area: board;
@@ -260,21 +273,21 @@ export const ScChessInterface = Styled.div<{
           props.dimension ? `${props.dimension - 190}px` : "0px"};
         /* background:grey; */
       }
-    }  
+    }
   }
-  
+
   ${ScChessSidePanel} {
     grid-area: sidePanel;
     /* width: 100%; */
     /* height: 100%; */
-  ${GamePlayPanel1}, ${GamePlayPanel2} {
-    background: #2b2b34;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0 8px 8px 0;
+    ${GamePlayPanel1}, ${GamePlayPanel2} {
+      background: #2b2b34;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0 8px 8px 0;
+    }
   }
-}
 `;
 
-// export const ScChessPgn = Styled.div`
+// export const ScChessPgn = styled.div`
 //   color: white;
 // `;

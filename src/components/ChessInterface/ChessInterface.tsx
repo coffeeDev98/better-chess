@@ -36,6 +36,7 @@ import bN from "../../assets/images/chessPieces/bN.svg";
 import bP from "../../assets/images/chessPieces/bP.svg";
 import arrowLeft from "../../assets/images/arrowLeft.svg";
 import arrowRight from "../../assets/images/arrowRight.svg";
+import PGNViewer from "../PGNViewer/PGNViewer";
 
 interface Props {}
 
@@ -320,45 +321,44 @@ const ChessInterface = (props: Props) => {
     sparePieces: editorMode,
   };
 
-  const RenderHistoryPanel = () => {
-    return (
-      <ScChessHistoryPanel>
-        <div className="title">
-          <img src={historyIcon} alt="" />
-          History
-        </div>
-        <table className="pgn">
+  const renderHistoryPanel = () => (
+    <ScChessHistoryPanel>
+      <div className="title">
+        <img src={historyIcon} alt="" />
+        History
+      </div>
+
+      {/* <table className="pgn">
           {pgn?.split(/\d\./)?.map?.(
             (move: string, index: number) =>
               index !== 0 && (
                 <tr>
                   <td>{index}</td>
-                  {/* <div> */}
                   {move
                     .split(" ")
                     .filter((item: string) => item !== "")
                     .map((singleMove: string, i: number) => (
                       <td>{singleMove}</td>
                     ))}
-                  {/* </div> */}
                 </tr>
               )
           )}
-        </table>
-        <ScSidePanelNav>
-          <img
-            src={arrowLeft}
-            alt=""
-            onClick={() => {
-              setSidePanelSection("menu");
-            }}
-          />
-          <img src={arrowRight} alt="" />
-        </ScSidePanelNav>
-      </ScChessHistoryPanel>
-    );
-  };
-
+        </table> */}
+      <div className="pgn-section">
+        {pgn && <PGNViewer pgn={pgn} mode="edit"></PGNViewer>}
+      </div>
+      <ScSidePanelNav>
+        <img
+          src={arrowLeft}
+          alt=""
+          onClick={() => {
+            setSidePanelSection("menu");
+          }}
+        />
+        <img src={arrowRight} alt="" />
+      </ScSidePanelNav>
+    </ScChessHistoryPanel>
+  );
   const renderSidePanel = () => {
     switch (sidePanelSection) {
       case "menu":
@@ -372,7 +372,7 @@ const ChessInterface = (props: Props) => {
           />
         );
       case "history":
-        return <RenderHistoryPanel />;
+        return renderHistoryPanel();
 
       default:
         return (
@@ -460,6 +460,7 @@ const ChessInterface = (props: Props) => {
       <div id="board-container" className="board-container">
         {promotionModal && renderPromotionModal}
         <NativeChessboard {...chessboardConfig} />
+        {/* <PGNViewer pgn={pgn} mode="edit" /> */}
       </div>
       {/* {!editorMode && ( */}
       <ScChessSidePanel editorMode={editorMode}>
@@ -467,10 +468,6 @@ const ChessInterface = (props: Props) => {
           <EditorSidePanel>
             <div className="title">Board Settings</div>
             <div className="divider"></div>
-            {/* <div className="slider">
-              <div>Manual</div>
-              <div>Upload</div>
-            </div> */}
             <label htmlFor="inputFen">Fen</label>
             <div className="input-fen">
               <input
@@ -482,8 +479,6 @@ const ChessInterface = (props: Props) => {
                 }}
               />
             </div>
-            {/* <label htmlFor="inputFen">Output</label>
-            <div className="output-fen"></div> */}
             <div className="btn-panel">
               <button onClick={boardEditor.reset}>Reset</button>
               <button onClick={boardEditor.clear}>Clear</button>

@@ -22,8 +22,8 @@ import {
   BOARD_MOVE_UPDATE,
 } from "../constants/chessMultiplayerMsgTypes";
 
-const Chess = require("chess.js");
-
+// const Chess = require("../packages/chess-es6.js/src/chess.js");
+const Chess = require("../packages/chess.js/chess.js");
 interface IMovable {
   free?: boolean; // all moves are valid - board editor
   color?: Color | "both"; // color that can move. white | black | both | undefined
@@ -74,7 +74,7 @@ interface IEvents {
 const defaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const useChess = (Agora: any, Multiplayer: any) => {
-  const [chess] = useState<ChessInstance>(new Chess(defaultFen));
+  const [chess] = useState<any>(new Chess(defaultFen));
   const [promotionModal, setPromotionModal] = useState<boolean>(false);
   const [state, setState] = useState<{
     turn: "w" | "b";
@@ -156,8 +156,8 @@ const useChess = (Agora: any, Multiplayer: any) => {
     }
   }, [Agora.channel]);
   useEffect(() => {
-    console.log("PENDING_MOVE: ", state.pendingMove);
-  }, [state.pendingMove]);
+    console.log("PGN: ", state.pgn);
+  }, [state.pgn]);
 
   const showPromotionModal = () => setPromotionModal(true);
   const hidePromotionModal = () => setPromotionModal(false);
@@ -170,6 +170,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
   };
 
   const reset = () => {
+    chess.reset();
     setState({
       ...state,
       fen: defaultFen,
@@ -329,6 +330,13 @@ const useChess = (Agora: any, Multiplayer: any) => {
       history: chess.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history }),
     }));
+    const fens: any[] = [];
+    moves.forEach((m: any) => {
+      chess.move(m);
+      fens.push(chess.fen());
+      chess.undo();
+    });
+    console.log("FENS: ", fens);
     Multiplayer.updateBoard(move);
   };
 

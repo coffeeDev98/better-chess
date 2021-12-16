@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mliebelt/pgn-viewer": "^1.5.12",
     "@react-chess/chessground": "^1.1.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -14,6 +15,7 @@
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.15",
+    "@types/uuid": "^8.3.3",
     "agora-rtm-sdk": "^1.4.3",
     "autoprefixer": "^9",
     "axios": "^0.24.0",
@@ -24,6 +26,7 @@
     "react-scripts": "4.0.3",
     "styled-components": "^5.3.3",
     "typescript": "^4.1.2",
+    "uuid": "^8.3.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
