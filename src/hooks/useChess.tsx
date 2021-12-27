@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   ChessInstance,
   Move,
@@ -18,11 +18,14 @@ import {
 } from "chessground/types";
 import { fenToObj, parseJSON } from "../utils/utils";
 import {
+  BOARD_FEN_UPDATE,
   BOARD_MOVE_UNDO,
   BOARD_MOVE_UPDATE,
+  BOARD_PGN_UPDATE,
 } from "../constants/chessMultiplayerMsgTypes";
 
 const Chess = require("chess.js");
+const ChessES6 = require("../packages/chess-es6/src/chess.js");
 // const Chess = require("../packages/chess-es6.js/src/chess.js");
 // const Chess = require("../packages/chess.js/chess.js");
 interface IMovable {
@@ -66,8 +69,8 @@ interface IEvents {
   change?: () => void; // called after the situation changes on the board
   // called after a piece has been moved.
   // capturedPiece is undefined or like {color: 'white'; 'role': 'queen'}
-  move?: (orig: Key, dest: Key, capturedPiece?: Piece) => void;
-  dropNewPiece?: (piece: Piece, key: Key) => void;
+  move?: (orig: Key, dest: Key, capturedPiece?: any) => void;
+  dropNewPiece?: (piece: any, key: Key) => void;
   select?: (key: Key) => void; // called when a square is selected
   insert?: (elements: Elements) => void; // when the board DOM has been (re)inserted
 }
@@ -76,20 +79,21 @@ const defaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const useChess = (Agora: any, Multiplayer: any) => {
   const [chess] = useState<any>(new Chess(defaultFen));
+  const [game] = useState<any>(new ChessES6(defaultFen));
   const [promotionModal, setPromotionModal] = useState<boolean>(false);
   const [state, setState] = useState<{
     turn: "w" | "b";
     fen: string;
     orientation: "white" | "black";
-    pendingMove: { sourceSquare: Square; targetSquare: Square } | undefined;
+    pendingMove: { sourceSquare: any; targetSquare: any } | undefined;
     dropSquareStyle: any;
     squareStyles: any;
     pieceSquare: any;
     square: string;
-    history: Move[];
+    history: any[];
     boardPosition: any;
     pgn: string;
-    undoMovesArray: Move[];
+    undoMovesArray: any[];
   }>({
     turn: chess.turn() || "w",
     fen: "start",
@@ -113,6 +117,30 @@ const useChess = (Agora: any, Multiplayer: any) => {
   // useEffect(() => {
   //   console.log("SQUARE_STYLES: ", state.squareStyles);
   // }, [state.squareStyles]);
+  useEffect(() => {
+    if (
+      chess &&
+      Object.fromEntries(new URLSearchParams(window.location.search).entries())
+        .fen
+    ) {
+      chess.load(
+        Object.fromEntries(
+          new URLSearchParams(window.location.search).entries()
+        ).fen
+      );
+      game.loadFen(
+        Object.fromEntries(
+          new URLSearchParams(window.location.search).entries()
+        ).fen
+      );
+      setState({
+        ...state,
+        fen: Object.fromEntries(
+          new URLSearchParams(window.location.search).entries()
+        ).fen,
+      });
+    }
+  }, [chess]);
 
   useEffect(() => {
     console.log(
@@ -139,6 +167,20 @@ const useChess = (Agora: any, Multiplayer: any) => {
               sourceSquare: data.json.move.from,
               targetSquare: data.json.move.to,
             });
+            break;
+          case BOARD_FEN_UPDATE:
+            console.log("PGNPRING_LOADINGFEN...");
+            chess.load(data.json.fen);
+            game.loadFen(data.json.fen);
+            console.log("PGNPRINT_FENUPDATE: ", data.json.fen);
+            setState({ ...state, fen: data.json.fen });
+            break;
+          case BOARD_PGN_UPDATE:
+            console.log("PGNPRING_LOADINGPGN...", data);
+            chess.load_pgn(data.json.pgn);
+            game.loadPgn(data.json.pgn);
+            console.log("PGNPRINT_PGNUPDATE: ", data.json.pgn);
+            setState({ ...state, pgn: data.json.pgn, fen: chess.fen() });
             break;
           case BOARD_MOVE_UNDO:
             const parametersObj = {
@@ -186,22 +228,6 @@ const useChess = (Agora: any, Multiplayer: any) => {
     });
   };
 
-  const promotion = (
-    sourceSquare: Square,
-    targetSquare: Square,
-    e?: Exclude<PieceType, "p" | "k">
-  ) => {
-    const from = sourceSquare;
-    const to = targetSquare;
-    chess.move({ from, to, promotion: e });
-    setState({
-      ...state,
-      fen: chess.fen(),
-      pendingMove: undefined,
-    });
-    hidePromotionModal();
-  };
-
   const removeHighlightSquare = () => {
     const currKingPieceSquare = Object.keys(state.boardPosition).find(
       (key: string) => state.boardPosition[key] === `${chess.turn()}K`
@@ -216,10 +242,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
   };
 
   // show possible moves
-  const highlightSquare = (
-    sourceSquare: Square,
-    squaresToHighlight: string[]
-  ) => {
+  const highlightSquare = (sourceSquare: any, squaresToHighlight: string[]) => {
     const highlightStyles = [sourceSquare, ...squaresToHighlight].reduce(
       (a, c) => {
         return {
@@ -265,17 +288,17 @@ const useChess = (Agora: any, Multiplayer: any) => {
     });
   };
 
-  const onMouseOutSquare = (square: Square) => {
-    removeHighlightSquare();
-  };
-
-  const onMouseOverSquare = (square: Square) => {
+  const onMouseOverSquare = (square: any) => {
     // get list of possible moves for this square
-    let moves = chess.moves({
+    const moves = chess.moves({
       square,
       verbose: true,
     });
-
+    // const moves = game.moves({
+    //   onlyForSquare: square,
+    //   onlyAlgebraicSquares: true,
+    //   onlyDestinationSquares: true,
+    // });
     // exit if there are no moves available for this square
     if (moves.length === 0) return;
 
@@ -283,8 +306,29 @@ const useChess = (Agora: any, Multiplayer: any) => {
     for (const move of moves) {
       squaresToHighlight.push(move.to);
     }
-    // console.log("SQUARESTOHIGHLIGHT: ", squaresToHighlight);
+    console.log("SQUARESTOHIGHLIGHT: ", { moves, squaresToHighlight });
     highlightSquare(square, squaresToHighlight);
+  };
+
+  const onMouseOutSquare = (square: any) => {
+    removeHighlightSquare();
+  };
+
+  const promotion = (
+    sourceSquare: any,
+    targetSquare: any,
+    e?: Exclude<any, "p" | "k">
+  ) => {
+    const from = sourceSquare;
+    const to = targetSquare;
+    chess.move({ from, to, promotion: e });
+    game.makeMoveFromAlgebraic(from, to, e);
+    setState({
+      ...state,
+      fen: chess.fen(),
+      pendingMove: undefined,
+    });
+    hidePromotionModal();
   };
 
   const onDrop = ({
@@ -292,30 +336,24 @@ const useChess = (Agora: any, Multiplayer: any) => {
     targetSquare,
     piece,
   }: {
-    sourceSquare: Square;
-    targetSquare: Square;
+    sourceSquare: any;
+    targetSquare: any;
     piece?: string;
   }) => {
     // see if the move is legal
-    let move = chess.move({
+    const move = chess.move({
       from: sourceSquare,
       to: targetSquare,
       // promotion: "q", // always promote to a queen for example simplicity
     });
-    // console.log("MOVE: ", move);
     const moves = chess.moves({ verbose: true });
     for (let i = 0, len = moves.length; i < len; i++) {
       /* eslint-disable-line */
-      if (
-        moves[i].flags.indexOf("p") !== -1 &&
-        moves[i].from === sourceSquare
-      ) {
+      if (moves[i].flags.includes("p") && moves[i].from === sourceSquare) {
         setState({
           ...state,
           pendingMove: { sourceSquare, targetSquare },
         });
-        // console.log("opening promotional modal");
-        // promotion(sourceSquare, targetSquare, "r");
         showPromotionModal();
         return;
       }
@@ -323,14 +361,30 @@ const useChess = (Agora: any, Multiplayer: any) => {
 
     // illegal move
     if (move === null) return;
+
+    console.log("ES6 MOVES: ", {
+      move: game.makeMoveFromAlgebraic(sourceSquare, targetSquare),
+      moves: game.moves({
+        onlyAlgebraicSquares: true,
+        onlyForSquare: sourceSquare,
+        onlyDestinationSquares: true,
+      }),
+      fen: game.toFen(),
+      pgn: game.toPgn(),
+      history: game.history(),
+      game,
+      header: game.header(),
+    });
+    game.makeMoveFromAlgebraic(sourceSquare, targetSquare);
     setState(({ history, pieceSquare }) => ({
       ...state,
       turn: chess.turn(),
       fen: chess.fen(),
-      pgn: chess.pgn(),
+      pgn: game.toPgn(),
       history: chess.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history }),
     }));
+
     const fens: any[] = [];
     moves.forEach((m: any) => {
       chess.move(m);
@@ -338,10 +392,12 @@ const useChess = (Agora: any, Multiplayer: any) => {
       chess.undo();
     });
     console.log("FENS: ", fens);
-    Multiplayer.updateBoard(move);
+    // Multiplayer.updateBoard(move);
+    // Multiplayer.updateBoardFen(chess.fen());
+    Multiplayer.updateBoardPgn(game.toPgn());
   };
 
-  const onSquareClick = (square: Square) => {
+  const onSquareClick = (square: any) => {
     setState(({ history }) => ({
       ...state,
       squareStyles: {
@@ -357,12 +413,6 @@ const useChess = (Agora: any, Multiplayer: any) => {
     });
 
     const moves = chess.moves({ verbose: true });
-    // const pieceMoves = chess.moves({ square, verbose: true });
-    // let squaresToHighlight = [];
-    // for (const m of pieceMoves) {
-    //   squaresToHighlight.push(m.to);
-    // }
-    // highlightSquare(square, squaresToHighlight);
 
     for (let i = 0, len = moves.length; i < len; i++) {
       /* eslint-disable-line */
@@ -395,7 +445,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
   };
 
   // central squares get diff dropSquareStyles
-  const onDragOverSquare = (square: Square) => {
+  const onDragOverSquare = (square: any) => {
     setState({
       ...state,
       dropSquareStyle:
@@ -405,7 +455,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
     });
   };
 
-  const onSquareRightClick = (square: Square) =>
+  const onSquareRightClick = (square: any) =>
     setState({
       ...state,
       squareStyles: { [square]: { backgroundColor: "deepPink" } },
@@ -414,6 +464,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
   const undoMove = () => {
     const undoMoveObj = chess.undo();
     if (undoMoveObj) {
+      console.log("ES6 MOVE UNDO: ", game.prev());
       setState({
         ...state,
         fen: chess.fen(),
@@ -424,9 +475,10 @@ const useChess = (Agora: any, Multiplayer: any) => {
   };
   const redoMove = () => {
     if (state.undoMovesArray.length === 0) return;
-    const redoMoveObj: Move | undefined = state.undoMovesArray.pop();
+    const redoMoveObj: any | undefined = state.undoMovesArray.pop();
     console.log("REDO: ", redoMoveObj);
     if (redoMoveObj) {
+      console.log("ES6 MOVE REDO: ", game.next());
       const move = chess.move(redoMoveObj);
       console.log("REDONE: ", move);
       if (move !== null) {
