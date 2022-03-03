@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/better-chess/static/css/main.fa2041d7.chunk.css",
-    "main.js": "/better-chess/static/js/main.a1ebf47f.chunk.js",
-    "main.js.map": "/better-chess/static/js/main.a1ebf47f.chunk.js.map",
-    "runtime-main.js": "/better-chess/static/js/runtime-main.5c143eee.js",
-    "runtime-main.js.map": "/better-chess/static/js/runtime-main.5c143eee.js.map",
-    "static/js/2.c78d75f4.chunk.js": "/better-chess/static/js/2.c78d75f4.chunk.js",
-    "static/js/2.c78d75f4.chunk.js.map": "/better-chess/static/js/2.c78d75f4.chunk.js.map",
-    "static/js/3.ac73dd62.chunk.js": "/better-chess/static/js/3.ac73dd62.chunk.js",
-    "static/js/3.ac73dd62.chunk.js.map": "/better-chess/static/js/3.ac73dd62.chunk.js.map",
+    "main.js": "/better-chess/static/js/main.2ce00dd5.chunk.js",
+    "main.js.map": "/better-chess/static/js/main.2ce00dd5.chunk.js.map",
+    "runtime-main.js": "/better-chess/static/js/runtime-main.ca3b6fc2.js",
+    "runtime-main.js.map": "/better-chess/static/js/runtime-main.ca3b6fc2.js.map",
+    "static/js/2.deab74e6.chunk.js": "/better-chess/static/js/2.deab74e6.chunk.js",
+    "static/js/2.deab74e6.chunk.js.map": "/better-chess/static/js/2.deab74e6.chunk.js.map",
+    "static/js/3.9cfed3af.chunk.js": "/better-chess/static/js/3.9cfed3af.chunk.js",
+    "static/js/3.9cfed3af.chunk.js.map": "/better-chess/static/js/3.9cfed3af.chunk.js.map",
     "index.html": "/better-chess/index.html",
     "static/css/main.fa2041d7.chunk.css.map": "/better-chess/static/css/main.fa2041d7.chunk.css.map",
-    "static/js/2.c78d75f4.chunk.js.LICENSE.txt": "/better-chess/static/js/2.c78d75f4.chunk.js.LICENSE.txt",
+    "static/js/2.deab74e6.chunk.js.LICENSE.txt": "/better-chess/static/js/2.deab74e6.chunk.js.LICENSE.txt",
     "static/media/arrowLeft.7e025148.svg": "/better-chess/static/media/arrowLeft.7e025148.svg",
     "static/media/arrowRight.ae8c68ee.svg": "/better-chess/static/media/arrowRight.ae8c68ee.svg",
     "static/media/bB.1f023e3e.svg": "/better-chess/static/media/bB.1f023e3e.svg",
@@ -34,9 +34,9 @@
     "static/media/wR.33cf0258.svg": "/better-chess/static/media/wR.33cf0258.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.5c143eee.js",
-    "static/js/2.c78d75f4.chunk.js",
+    "static/js/runtime-main.ca3b6fc2.js",
+    "static/js/2.deab74e6.chunk.js",
     "static/css/main.fa2041d7.chunk.css",
-    "static/js/main.a1ebf47f.chunk.js"
+    "static/js/main.2ce00dd5.chunk.js"
   ]
 }
