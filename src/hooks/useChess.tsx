@@ -118,6 +118,11 @@ const useChess = (Agora: any, Multiplayer: any) => {
   //   console.log("SQUARE_STYLES: ", state.squareStyles);
   // }, [state.squareStyles]);
   useEffect(() => {
+    console.log(
+      "FEN: ",
+      Object.fromEntries(new URLSearchParams(window.location.search).entries())
+        .fen
+    );
     if (
       chess &&
       Object.fromEntries(new URLSearchParams(window.location.search).entries())
