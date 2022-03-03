@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import * as uuid from "uuid";
 import { pgnView, pgnEdit, pgnPrint } from "@mliebelt/pgn-viewer";
 
@@ -25,6 +25,39 @@ const PGNViewer = ({ pgn, mode }: IProps) => {
     // pieceStyle: "merida",
   };
   const id = `board-0`;
+
+  const mutationCallback = (mutationsList: any, observer: any) => {
+    // console.log("PGNPRINTMUTATION: ", mutationList);
+    for (const mutation of mutationsList) {
+      if (mutation.type === "childList") {
+        document.getElementById(`${id}Buttonpgn`)?.click();
+        console.log(
+          "PGNPRINT: ",
+          document.getElementById(`textpgn${id}Button`)?.innerHTML
+        );
+        document.getElementById(`${id}Buttonpgn`)?.click();
+      }
+    }
+  };
+  useEffect(() => {
+    console.log(
+      "PGNPRINTBUTTON: ",
+      document.getElementById(`${id}Buttonpgn`)?.click()
+    );
+
+    const movesDiv = document.getElementById(`${id}Moves`);
+    const config = { attributes: true, childList: true, subtree: true };
+    const observer = new MutationObserver(mutationCallback);
+    movesDiv && observer.observe(movesDiv, config);
+  }, [document.getElementById(`${id}Buttonpgn`)]);
+
+  useEffect(() => {
+    console.log(
+      "PGNPRINT: ",
+      document.getElementById(`textpgn${id}Button`)?.innerHTML,
+      document.getElementById(`${id}Buttonpgn`)?.click()
+    );
+  }, [document.getElementById(`textpgn${id}Button`)]);
   useLayoutEffect(() => {
     switch (mode) {
       case "view":
