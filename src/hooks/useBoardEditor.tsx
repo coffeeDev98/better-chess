@@ -90,15 +90,10 @@ const useBoardEditor = () => {
     });
   };
 
-  const onDrop = ({
-    sourceSquare,
-    targetSquare,
-    piece,
-  }: {
-    sourceSquare: Square | string;
-    targetSquare: Square;
-    piece?: string;
-  }) => {
+  const onDrop = ({ detail }: { detail: any }) => {
+		const { source, target, piece, newPosition, oldPosition, orientation } = detail;
+		const sourceSquare = source;
+		const targetSquare = target;
     console.log("EDITOR_ON_DROP: ", sourceSquare, targetSquare, piece);
     let boardPosition;
     boardPosition =

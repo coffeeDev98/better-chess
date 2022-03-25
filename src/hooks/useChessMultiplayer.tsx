@@ -15,7 +15,7 @@ interface IProps {
 
 const useChessMultiplayer = (props: IProps) => {
   const { Agora } = props;
-
+  console.log("CHESS_MULTIPLAYER: ", Agora);
   const updateBoard = (move: ShortMove) => {
     const updateObject = {
       move: move,
@@ -32,6 +32,7 @@ const useChessMultiplayer = (props: IProps) => {
     const updateObject = {
       pgn,
     };
+    console.log("MULTIPLAYER_SEND: ", { Agora, updateObject });
     Agora?.sendChannelMessage(updateObject, BOARD_PGN_UPDATE);
   };
   const undoMoveMsg = (undoArray: Move[]) => {

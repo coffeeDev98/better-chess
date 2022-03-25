@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import NativeChessboard from "chessboardjsx";
+// import NativeChessboard from "chessboardjsx";
+import "chessboard-element";
 import useChess from "../../hooks/useChess";
 import useAgora from "../../hooks/useAgora";
 import useChessMultiplayer from "../../hooks/useChessMultiplayer";
@@ -37,8 +38,14 @@ import bP from "../../assets/images/chessPieces/bP.svg";
 import arrowLeft from "../../assets/images/arrowLeft.svg";
 import arrowRight from "../../assets/images/arrowRight.svg";
 import PGNViewer from "../PGNViewer/PGNViewer";
-
-interface Props {}
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "chess-board": any;
+    }
+  }
+}
+interface Props { }
 
 interface ICustomPieceProps {
   squareWidth: number;
@@ -102,6 +109,7 @@ const ChessInterface = (props: Props) => {
   const [sidePanelSection, setSidePanelSection] = useState<string | undefined>(
     "menu"
   );
+  const [board, setBoard] = useState<any>();
   // const [overlay, setOverlay] = useState(new ChessboardArrows("board-0"));
 
   const Agora = useAgora();
@@ -291,36 +299,118 @@ const ChessInterface = (props: Props) => {
     ),
   };
 
-  let chessboardConfig: Partial<IChessboardProps> = {
-    id: "board-0",
-    position: editorMode ? boardEditor.boardPosition : fen,
-    dropOffBoard: editorMode ? "trash" : "snapback",
-    draggable: true,
-    lightSquareStyle: { backgroundColor: "#E8EDF9" },
-    darkSquareStyle: { backgroundColor: "#B7C0D8" },
-    pieces: customPieces,
-    boardStyle: {
-      width: dimension,
-      height: dimension,
-      position: "relative",
-    },
-    width: dimension,
+  // let chessboardConfig: Partial<IChessboardProps> = {
+  //   id: "board-0",
+  //   position: editorMode ? boardEditor.boardPosition : fen,
+  //   dropOffBoard: editorMode ? "trash" : "snapback",
+  //   draggable: true,
+  //   lightSquareStyle: { backgroundColor: "#E8EDF9" },
+  //   darkSquareStyle: { backgroundColor: "#B7C0D8" },
+  //   pieces: customPieces,
+  //   boardStyle: {
+  //     width: dimension,
+  //     height: dimension,
+  //     position: "relative",
+  //   },
+  //   width: dimension,
 
-    getPosition: editorMode ? boardEditor.setBoardPosition : setBoardPosition,
-    ...(editorMode ? { onDrop: boardEditor.onDrop } : { onDrop }),
+  //   getPosition: editorMode ? boardEditor.setBoardPosition : setBoardPosition,
+  //   ...(editorMode ? { onDrop: boardEditor.onDrop } : { onDrop }),
+  //   // onDrop,
+  //   orientation: editorMode ? boardEditor.orientation : orientation || "white",
+  //   ...(!editorMode && {
+  //     onMouseOverSquare,
+  //     onMouseOutSquare,
+  //     squareStyles,
+  //     onDragOverSquare,
+  //     onSquareClick,
+  //     onSquareRightClick,
+  //   }),
+  //   sparePieces: editorMode,
+  // };
+
+  let chessboardConfig = {
+    id: "board-0",
+    "hide-notation": true,
+    position: editorMode ? boardEditor.fen : fen,
+    // position: "start",
+    "drop-off-board": editorMode ? "trash" : "snapback",
+    "draggable-pieces": true,
+    // lightSquareStyle: {
+    //   backgroundColor: "#E8EDF9",
+    //   width: (document.getElementById("board-container")?.clientWidth || 500) / 8,
+    //   height: (document.getElementById("board-container")?.clientHeight || 500) / 8,
+    //   display: "flex",
+    //   flexDirection: "row",
+    //   justifyContent: "center",
+    //   alignItems: "center",
+    // },
+    // darkSquareStyle: {
+    //   backgroundColor: "#B7C0D8",
+    //   width: (document.getElementById("board-container")?.clientWidth || 500) / 8,
+    //   height: (document.getElementById("board-container")?.clientHeight || 500) / 8,
+    //   display: "flex",
+    //   flexDirection: "row",
+    //   justifyContent: "center",
+    //   alignItems: "center",
+    // },
+    // pieces: customPieces,
+    // boardStyle: {
+    //   width: document.getElementById("board-container")?.clientWidth,
+    //   height: document.getElementById("board-container")?.clientHeight,
+    //   position: "relative",
+    //   display: "flex",
+    //   flexDirection: "column",
+    //   // border: "10px solid rgba(255,255,255)",
+    //   // boxSizing: "content-box",
+    // },
+    // width: dimension,
+    // calcWidth: () => document.getElementById("board-container")?.clientWidth||0,
+    // getPosition: editorMode ? boardEditor.setBoardPosition : setBoardPosition,
+    // ...(editorMode ? { onDrop: boardEditor.onDrop } : { onDrop }),
     // onDrop,
     orientation: editorMode ? boardEditor.orientation : orientation || "white",
-    ...(!editorMode && {
-      onMouseOverSquare,
-      onMouseOutSquare,
-      squareStyles,
-      onDragOverSquare,
-      onSquareClick,
-      onSquareRightClick,
-    }),
-    sparePieces: editorMode,
+    // ...(!editorMode && {
+    //   squareStyles,
+    // }),
+    // onDragOverSquare,
+    // onSquareClick,
+    // onSquareRightClick,
+    // onMouseOverSquare,
+    // onMouseOutSquare,
+    ...(editorMode && { "spare-pieces": true }),
+    // showNotation: false,
   };
+  // console.log("EDITOR: ", { chessboardConfig, boardEditor, editorMode });
 
+  useEffect(() => {
+    if (document.querySelector("chess-board")) {
+      setBoard(document.querySelector("chess-board"));
+    }
+  }, [document.querySelector("chess-board")]);
+  useEffect(() => {
+    const board = document.querySelector("chess-board")
+    // board?.addEventListener("mouseover-square", onMouseOverSquare);
+    // board?.addEventListener("mouseout-square", onMouseOutSquare);
+    // board?.addEventListener('drag-start', (e: any) => {
+    //   const { source, piece, position, orientation } = e.detail;
+    // });
+    board?.addEventListener("drop", (e: any) => (editorMode ? boardEditor.onDrop(e) : onDrop(e)));
+    // !editorMode && board?.addEventListener("mouseover-square", (e: any) => { console.log("MOUSEOVER"); onMouseOverSquare(e) });
+    // !editorMode && board?.addEventListener("mouseout-square", (e: any) => { onMouseOutSquare(e) });
+
+
+    return () => {
+      // board?.removeEventListener("mouseover-square", onMouseOverSquare);
+      // board?.removeEventListener("mouseout-square", onMouseOutSquare);
+      // board?.addEventListener('drag-start', (e: any) => {
+      //   const { source, piece, position, orientation } = e.detail;
+      // });
+      board?.removeEventListener("drop", (e: any) => (editorMode ? boardEditor.onDrop(e) : onDrop(e)));
+      // !editorMode && board?.removeEventListener("mouseover-square", (e: any) => onMouseOverSquare);
+      // !editorMode && board?.removeEventListener("mouseout-square", (e: any) => onMouseOutSquare);
+    };
+  }, []);
   const renderHistoryPanel = () => (
     <ScChessHistoryPanel>
       <div className="title">
@@ -459,7 +549,8 @@ const ChessInterface = (props: Props) => {
     <ScChessInterface dimension={dimension} editorMode={editorMode}>
       <div id="board-container" className="board-container">
         {promotionModal && renderPromotionModal}
-        <NativeChessboard {...chessboardConfig} />
+        {/* <NativeChessboard {...chessboardConfig} /> */}
+        <chess-board {...chessboardConfig}></chess-board>
         {/* <PGNViewer pgn={pgn} mode="edit" /> */}
       </div>
       {/* {!editorMode && ( */}
