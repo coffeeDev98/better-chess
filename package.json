@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mliebelt/pgn-parser": "^1.4.4",
     "@mliebelt/pgn-viewer": "^1.5.12",
     "@react-chess/chessground": "^1.1.0",
     "@testing-library/jest-dom": "^5.11.4",

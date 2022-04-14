@@ -78,7 +78,12 @@ interface IEvents {
 const defaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const useChess = (Agora: any, Multiplayer: any) => {
-  const [chess] = useState<any>(new Chess(defaultFen));
+  const [chess] = useState<any>(
+    new Chess(
+      Object.fromEntries(new URLSearchParams(window.location.search).entries())
+        .fen || defaultFen
+    )
+  );
   const [game] = useState<any>(new ChessES6(defaultFen));
   const [promotionModal, setPromotionModal] = useState<boolean>(false);
   const [state, setState] = useState<{
@@ -162,6 +167,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
   }, [state.undoMovesArray]);
 
   useEffect(() => {
+    console.log("AGORA_CHANNEL: ", Agora.channel);
     if (Agora.channel) {
       Agora.channel?.on("ChannelMessage", (message: any) => {
         const data = parseJSON(message.text);
@@ -174,7 +180,7 @@ const useChess = (Agora: any, Multiplayer: any) => {
             });
             break;
           case BOARD_FEN_UPDATE:
-            console.log("PGNPRING_LOADINGFEN...");
+            console.log("PGNPRINT_LOADINGFEN...");
             chess.load(data.json.fen);
             game.loadFen(data.json.fen);
             console.log("PGNPRINT_FENUPDATE: ", data.json.fen);

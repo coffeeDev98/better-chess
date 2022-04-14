@@ -37,6 +37,7 @@ import bP from "../../assets/images/chessPieces/bP.svg";
 import arrowLeft from "../../assets/images/arrowLeft.svg";
 import arrowRight from "../../assets/images/arrowRight.svg";
 import PGNViewer from "../PGNViewer/PGNViewer";
+import { parse } from "@mliebelt/pgn-parser";
 
 interface Props {}
 
@@ -84,6 +85,28 @@ const SidePanelMenu = ({
     </GamePlayPanel1>
     <GamePlayPanel2>
       <div>
+        <input
+          type="file"
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            // boardEditor.setInputFen(e.target.value);
+            const reader = new FileReader();
+            reader.onload = async (e: any) => {
+              const text = e?.target?.result;
+              const pgnGamesArray: any = parse(text, { startRule: "games" });
+              console.log("GAMES_LIST: ", pgnGamesArray);
+              // console.log(
+              //   "FIRST_GAME: ",
+              //   pgnGamesArray?.[0].moves
+              //     .map((m: any) => `${m?.moveNumber ? `${m.moveNumber}.` : ""}${m.notation.notation} `)
+              //     .join("")
+              // );
+              if (pgnGamesArray?.[0].tags.FEN) {
+              } else {
+              }
+            };
+            e.target.files && reader.readAsText(e.target.files[0]);
+          }}
+        />
         <img src={loadIcon} alt="Load" />
       </div>
     </GamePlayPanel2>
@@ -94,10 +117,8 @@ const ChessInterface = (props: Props) => {
   const [dimension, setDimension] = useState<number>();
   // const [undoMove, setUndoMove] = useState<boolean>(false);
   const [editorMode, setEditorMode] = useState<boolean>(
-    (Object.fromEntries(new URLSearchParams(window.location.search).entries())
-      .editorMode === "true"
-      ? true
-      : false) || false
+    Object.fromEntries(new URLSearchParams(window.location.search).entries())
+      .editorMode === "true" || false
   );
   const [sidePanelSection, setSidePanelSection] = useState<string | undefined>(
     "menu"
@@ -146,7 +167,9 @@ const ChessInterface = (props: Props) => {
       ?.querySelector<HTMLElement>("div");
     //   ?.querySelector("div")
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     firstChild = boardContainerDiv?.firstElementChild;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     lastChild = boardContainerDiv?.lastElementChild;
 
     if (firstChild && lastChild) {

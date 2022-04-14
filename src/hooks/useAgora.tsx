@@ -11,7 +11,7 @@ import agoraUtils from "../utils/agoraUtils";
 
 const useAgora = () => {
   const [channel, setChannel] = useState<RtmChannel | null>(null);
-  const appId = "f4b36b6c897e41bfaa3904d75da40777";
+  const appId = "402d13a7fc1947b988929adf142b60fb";
   const client: RtmClient | null = AgoraRTM.createInstance(appId);
   let playerMeta = {
     uid: (Math.floor(Math.random() * 90000) + 10000).toString(),
